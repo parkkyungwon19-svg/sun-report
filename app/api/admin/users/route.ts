@@ -49,7 +49,16 @@ export async function DELETE(request: Request) {
   const { userId } = await request.json() as { userId: string };
   const admin = getAdminClient();
 
-  // auth 계정 삭제 (cascade로 profile도 삭제됨)
+  // 관련 데이터 먼저 삭제 (FK 제약 해소)
+  await admin.from("sun_report_members").delete().in(
+    "report_id",
+    (await admin.from("sun_reports").select("id").eq("created_by", userId)).data?.map((r: { id: string }) => r.id) ?? []
+  );
+  await admin.from("sun_reports").delete().eq("created_by", userId);
+  await admin.from("mission_reports").delete().eq("created_by", userId);
+  await admin.from("profiles").delete().eq("id", userId);
+
+  // auth 계정 삭제
   const { error } = await admin.auth.admin.deleteUser(userId);
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
