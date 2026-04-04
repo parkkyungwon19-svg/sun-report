@@ -30,6 +30,7 @@ export interface Profile {
   sun_number: number | null;
   mission_id: number | null;
   status: ProfileStatus;
+  phone: string | null;
 }
 
 export interface SunReport {
