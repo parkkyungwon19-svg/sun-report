@@ -22,6 +22,7 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
   const [role, setRole] = useState<Role | "">("");
   const [sunNumber, setSunNumber] = useState<string>("");
   const [missionId, setMissionId] = useState<string>("");
@@ -46,6 +47,7 @@ export default function RegisterPage() {
           email,
           password,
           name,
+          phone: phone.replace(/[^0-9]/g, ""),
           role,
           sun_number: role === "sun_leader" ? parseInt(sunNumber) : undefined,
           mission_id: role === "mission_leader" ? parseInt(missionId) : undefined,
@@ -149,6 +151,20 @@ export default function RegisterPage() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="실명을 입력하세요"
                   required
+                  className="h-12 text-base"
+                />
+              </div>
+
+              {/* 전화번호 */}
+              <div className="space-y-2">
+                <Label htmlFor="phone">전화번호 <span className="text-xs text-muted-foreground">(카카오 알림톡 수신)</span></Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="010-0000-0000"
+                  inputMode="numeric"
                   className="h-12 text-base"
                 />
               </div>

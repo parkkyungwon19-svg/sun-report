@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-04T21:12:24.501Z",
+  "lastUpdated": "2026-04-04T21:20:46.403Z",
   "activeFeatures": [
     "constants",
     "supabase",
@@ -30,7 +30,8 @@
     "members",
     "reports",
     "notifications",
-    "reminder"
+    "reminder",
+    "kakao"
   ],
   "primaryFeature": "constants",
   "features": {
@@ -69,9 +70,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:26:15.937Z",
-        "lastUpdated": "2026-04-03T13:18:20.775Z"
+        "lastUpdated": "2026-04-04T21:19:05.176Z"
       },
-      "lastFile": "C:\\Users\\hiuo\\sun-report\\proxy.ts"
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\layout.tsx"
     },
     "login": {
       "phase": "do",
@@ -303,9 +304,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-02T20:07:31.829Z",
-        "lastUpdated": "2026-04-04T17:47:16.401Z"
+        "lastUpdated": "2026-04-04T21:20:46.403Z"
       },
-      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(auth)\\register\\page.tsx"
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\api\\auth\\register\\route.ts"
     },
     "users": {
       "phase": "do",
@@ -410,6 +411,19 @@
         "lastUpdated": "2026-04-04T21:12:24.501Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\api\\cron\\reminder\\route.ts"
+    },
+    "kakao": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-04T21:19:32.035Z",
+        "lastUpdated": "2026-04-04T21:19:32.035Z"
+      },
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\api\\kakao\\route.ts"
     }
   },
   "pipeline": {
@@ -420,7 +434,7 @@
   "session": {
     "startedAt": "2026-04-01T20:57:01.792Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-04T21:12:24.501Z"
+    "lastActivity": "2026-04-04T21:20:46.403Z"
   },
   "history": [
     {
@@ -1482,6 +1496,54 @@
     {
       "timestamp": "2026-04-04T21:12:24.501Z",
       "feature": "reminder",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T21:18:51.126Z",
+      "feature": "sun-report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T21:19:05.176Z",
+      "feature": "sun-report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T21:19:32.035Z",
+      "feature": "kakao",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T21:20:04.819Z",
+      "feature": "register",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T21:20:26.755Z",
+      "feature": "register",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T21:20:32.741Z",
+      "feature": "register",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T21:20:41.657Z",
+      "feature": "register",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T21:20:46.403Z",
+      "feature": "register",
       "phase": "do",
       "action": "updated"
     }

@@ -12,14 +12,15 @@ function getAdminClient() {
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { email, password, name, role, sun_number, mission_id, auto_approve } = body as {
+  const { email, password, name, phone, role, sun_number, mission_id, auto_approve } = body as {
     email: string;
     password: string;
     name: string;
+    phone?: string;
     role: Role;
     sun_number?: number;
     mission_id?: number;
-    auto_approve?: boolean; // 담임목사가 직접 생성 시 true
+    auto_approve?: boolean;
   };
 
   if (!email || !password || !name || !role) {
@@ -57,6 +58,7 @@ export async function POST(request: Request) {
   const { error: profileError } = await admin.from("profiles").insert({
     id: userId,
     name,
+    phone: phone ?? null,
     role,
     sun_number: sun_number ?? null,
     mission_id: derivedMissionId,

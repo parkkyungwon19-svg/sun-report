@@ -12,6 +12,13 @@ const notoSansKR = Noto_Sans_KR({
 export const metadata: Metadata = {
   title: "순보고 | 해운대순복음교회",
   description: "해운대순복음교회 순·선교회 보고 앱",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "순보고",
+  },
+  formatDetection: { telephone: false },
 };
 
 export default function RootLayout({
