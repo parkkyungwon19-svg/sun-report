@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Image from "next/image";
 import { toast } from "sonner";
-import { Church } from "lucide-react";
 import { SUN_DIRECTORY } from "@/lib/constants/sun-directory";
 import type { Role } from "@/types/database";
 
@@ -67,8 +67,8 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-sm">
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary mb-4">
-            <Church className="w-8 h-8 text-primary-foreground" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <Image src="/logo.png" alt="해운대순복음교회 로고" width={80} height={80} priority />
           </div>
           <h1 className="text-2xl font-bold text-primary">순보고</h1>
           <p className="text-sm text-muted-foreground mt-1">해운대순복음교회</p>
