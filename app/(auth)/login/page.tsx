@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Church } from "lucide-react";
 
 const SAVED_EMAIL_KEY = "sunbogo_saved_email";
 
@@ -60,8 +60,8 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* 교회 로고 영역 */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary mb-4">
-            <Church className="w-8 h-8 text-primary-foreground" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <Image src="/logo.png" alt="해운대순복음교회 로고" width={80} height={80} priority />
           </div>
           <h1 className="text-2xl font-bold text-primary">순보고</h1>
           <p className="text-sm text-muted-foreground mt-1">해운대순복음교회</p>
