@@ -31,6 +31,7 @@ export async function PATCH(request: Request) {
       sun_number?: number | null;
       mission_id?: number | null;
       name?: string;
+      phone?: string | null;
     };
   };
 

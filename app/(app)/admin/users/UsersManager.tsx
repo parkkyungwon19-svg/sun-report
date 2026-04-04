@@ -22,6 +22,7 @@ type UserRow = {
   sun_number: number | null;
   mission_id: number | null;
   status: ProfileStatus;
+  phone: string | null;
 };
 
 const ROLE_LABELS: Record<Role, string> = {
@@ -50,6 +51,7 @@ export default function UsersManager({ users: initialUsers }: Props) {
   const [users, setUsers] = useState(initialUsers);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [newPw, setNewPw] = useState<Record<string, string>>({});
+  const [editPhone, setEditPhone] = useState<Record<string, string>>({});
   const [filterStatus, setFilterStatus] = useState<ProfileStatus | "전체">("전체");
 
   // 신규 가입 폼
@@ -267,6 +269,7 @@ export default function UsersManager({ users: initialUsers }: Props) {
                     {u.email}
                     {u.role === "sun_leader" && u.sun_number && ` · ${u.sun_number}순`}
                     {u.role === "mission_leader" && u.mission_id && ` · ${u.mission_id}선교회`}
+                    {u.phone && ` · ${u.phone}`}
                   </p>
                 </div>
                 {expandedId === u.id ? <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" /> : <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />}
@@ -299,6 +302,26 @@ export default function UsersManager({ users: initialUsers }: Props) {
                   )}
 
                   <Separator />
+
+                  {/* 전화번호 수정 */}
+                  <div className="flex gap-2">
+                    <Input
+                      type="tel"
+                      placeholder="전화번호 (010-0000-0000)"
+                      value={editPhone[u.id] ?? u.phone ?? ""}
+                      onChange={(e) => setEditPhone((prev) => ({ ...prev, [u.id]: e.target.value }))}
+                      className="h-9 text-sm flex-1"
+                      inputMode="numeric"
+                    />
+                    <Button size="sm" variant="outline" onClick={async () => {
+                      const phone = (editPhone[u.id] ?? "").replace(/[^0-9]/g, "");
+                      if (await updateUser(u.id, { phone } as Partial<UserRow>)) {
+                        toast.success("전화번호가 저장되었습니다");
+                      }
+                    }}>
+                      저장
+                    </Button>
+                  </div>
 
                   {/* 비밀번호 초기화 */}
                   <div className="flex gap-2">
