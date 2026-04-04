@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-04T18:02:30.537Z",
+  "lastUpdated": "2026-04-04T21:12:24.501Z",
   "activeFeatures": [
     "constants",
     "supabase",
@@ -29,7 +29,8 @@
     "weekly-report",
     "members",
     "reports",
-    "notifications"
+    "notifications",
+    "reminder"
   ],
   "primaryFeature": "constants",
   "features": {
@@ -396,6 +397,19 @@
         "lastUpdated": "2026-04-04T18:02:04.227Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\api\\notifications\\route.ts"
+    },
+    "reminder": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-04T21:12:24.501Z",
+        "lastUpdated": "2026-04-04T21:12:24.501Z"
+      },
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\api\\cron\\reminder\\route.ts"
     }
   },
   "pipeline": {
@@ -406,7 +420,7 @@
   "session": {
     "startedAt": "2026-04-01T20:57:01.792Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-04T18:02:30.537Z"
+    "lastActivity": "2026-04-04T21:12:24.501Z"
   },
   "history": [
     {
@@ -1462,6 +1476,12 @@
     {
       "timestamp": "2026-04-04T18:02:30.537Z",
       "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T21:12:24.501Z",
+      "feature": "reminder",
       "phase": "do",
       "action": "updated"
     }
