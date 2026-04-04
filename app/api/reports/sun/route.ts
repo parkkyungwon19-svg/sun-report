@@ -64,5 +64,26 @@ export async function POST(request: Request) {
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
+  // 5. 제출(submitted) 시 → 해당 선교회장에게 알림 생성
+  if (reportPayload.status === "submitted") {
+    const missionId = reportPayload.mission_id;
+    if (missionId) {
+      const { data: leaders } = await admin
+        .from("profiles")
+        .select("id")
+        .eq("role", "mission_leader")
+        .eq("mission_id", missionId);
+      if (leaders && leaders.length > 0) {
+        await admin.from("notifications").insert(
+          leaders.map((l: { id: string }) => ({
+            user_id: l.id,
+            title: "순보고서 제출",
+            body: `${reportPayload.sun_number}순 ${reportPayload.sun_leader}님이 보고서를 제출했습니다.`,
+          }))
+        );
+      }
+    }
+  }
+
   return NextResponse.json({ id: currentReportId });
 }

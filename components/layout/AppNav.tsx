@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Church, LogOut, LayoutDashboard, FileText } from "lucide-react";
+import { LogOut, LayoutDashboard, FileText, Bell } from "lucide-react";
 import type { Profile } from "@/types/database";
 
 const ROLE_LABEL: Record<string, string> = {
@@ -15,6 +17,49 @@ const ROLE_LABEL: Record<string, string> = {
 
 export default function AppNav({ profile }: { profile: Profile }) {
   const router = useRouter();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const fetchUnread = useCallback(async () => {
+    const supabase = createClient();
+    const { count } = await supabase
+      .from("notifications")
+      .select("*", { count: "exact", head: true })
+      .eq("read", false);
+    setUnreadCount(count ?? 0);
+  }, []);
+
+  useEffect(() => {
+    fetchUnread();
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel("notifications-realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "notifications" },
+        () => fetchUnread()
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchUnread]);
+
+  async function handleBellClick() {
+    const supabase = createClient();
+    // 미읽은 알림 id 조회 후 읽음 처리
+    const { data } = await supabase
+      .from("notifications")
+      .select("id")
+      .eq("read", false);
+    if (data && data.length > 0) {
+      await fetch("/api/notifications", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: data.map((n: { id: string }) => n.id) }),
+      });
+      setUnreadCount(0);
+    }
+  }
 
   async function handleLogout() {
     const supabase = createClient();
@@ -34,7 +79,7 @@ export default function AppNav({ profile }: { profile: Profile }) {
     <header className="sticky top-0 z-50 w-full border-b bg-primary text-primary-foreground shadow-sm">
       <div className="container mx-auto max-w-2xl px-4 h-14 flex items-center justify-between">
         <Link href={dashboardHref} className="flex items-center gap-2">
-          <Church className="w-5 h-5" />
+          <Image src="/logo.png" alt="로고" width={28} height={28} />
           <span className="font-bold text-base">순보고</span>
         </Link>
 
@@ -67,6 +112,20 @@ export default function AppNav({ profile }: { profile: Profile }) {
                 </Link>
               </Button>
             )}
+            {/* 알림 벨 */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBellClick}
+              className="relative text-primary-foreground hover:bg-primary-foreground/10"
+            >
+              <Bell className="w-4 h-4" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 rounded-full bg-red-500 text-white text-[10px] font-bold">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </Button>
             <Button
               variant="ghost"
               size="sm"

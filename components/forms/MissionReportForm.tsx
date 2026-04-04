@@ -148,6 +148,15 @@ export default function MissionReportForm({
       }
 
       if (status === "submitted") {
+        // 담임목사에게 알림 전송
+        await fetch("/api/notifications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            missionId: profile.mission_id,
+            missionLeader: profile.name,
+          }),
+        });
         toast.success("선교회보고서가 제출되었습니다!");
         router.push("/dashboard/mission-leader");
       } else {
