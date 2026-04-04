@@ -101,14 +101,19 @@ export default function MessageComposer({ recipients }: { recipients: Recipient[
     toast.success("메시지가 클립보드에 복사되었습니다!");
   }
 
-  function openKakaoTalk() {
-    const encoded = encodeURIComponent(kakaoText);
-    // 모바일 카카오톡 딥링크
-    window.location.href = `kakaotalk://send?text=${encoded}`;
-    // 딥링크 실패 시 카카오톡 앱 다운로드 페이지 (타임아웃)
-    setTimeout(() => {
-      window.open("https://www.kakaocorp.com/page/service/service/KakaoTalk", "_blank");
-    }, 1500);
+  async function openKakaoTalk() {
+    // 메시지를 클립보드에 복사
+    await navigator.clipboard.writeText(kakaoText);
+
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      // 모바일: 카카오톡 딥링크로 열기
+      const encoded = encodeURIComponent(kakaoText);
+      window.location.href = `kakaotalk://send?text=${encoded}`;
+    } else {
+      // PC: 클립보드 복사 후 안내
+      toast.success("메시지가 복사되었습니다! 카카오톡 PC 앱에서 붙여넣기(Ctrl+V) 해주세요.");
+    }
   }
 
   return (
@@ -319,7 +324,7 @@ export default function MessageComposer({ recipients }: { recipients: Recipient[
               </div>
 
               <p className="text-xs text-muted-foreground text-center">
-                카카오톡이 열리면 메시지를 붙여넣기 후 각 수신자에게 발송해주세요
+                PC: 메시지 복사 후 카카오톡 앱에서 Ctrl+V 붙여넣기 / 모바일: 카카오톡 자동 연결
               </p>
             </div>
 
