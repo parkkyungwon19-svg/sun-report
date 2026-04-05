@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare } from "lucide-react";
+import PastorMessageDeleteButton from "@/components/dashboard/PastorMessageDeleteButton";
 
 export default async function PastorMessageCard({ userId }: { userId: string }) {
   const supabase = await createClient();
@@ -55,6 +56,7 @@ export default async function PastorMessageCard({ userId }: { userId: string }) 
                         day: "numeric",
                       })}
                     </p>
+                    <PastorMessageDeleteButton id={msg.id} />
                   </div>
                 </div>
               </li>

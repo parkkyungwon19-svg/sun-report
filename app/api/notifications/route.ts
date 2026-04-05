@@ -41,6 +41,25 @@ export async function POST(request: Request) {
   return NextResponse.json({ ok: true });
 }
 
+// 알림 삭제
+export async function DELETE(request: Request) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = await request.json() as { id: string };
+
+  const { error } = await supabase
+    .from("notifications")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json({ ok: true });
+}
+
 // 알림 읽음 처리
 export async function PATCH(request: Request) {
   const supabase = await createClient();
