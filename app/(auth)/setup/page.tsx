@@ -138,7 +138,7 @@ export default function SetupPage() {
               {role === "mission_leader" && (
                 <div className="space-y-2">
                   <Label>소속 선교회</Label>
-                  <Select value={missionId} onValueChange={setMissionId}>
+                  <Select value={missionId} onValueChange={(v) => setMissionId(v ?? "")}>
                     <SelectTrigger className="h-12">
                       <SelectValue placeholder="선교회를 선택하세요" />
                     </SelectTrigger>
