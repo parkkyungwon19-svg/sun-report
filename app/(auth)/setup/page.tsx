@@ -38,7 +38,8 @@ export default function SetupPage() {
     });
   }, [router]);
 
-  function handleSunSelect(val: string) {
+  function handleSunSelect(val: string | null) {
+    if (!val) return;
     setSunNumber(val);
     const entry = SUN_DIRECTORY.find((s) => s.sunNumber === parseInt(val));
     if (entry && !name) setName(entry.sunLeader);
