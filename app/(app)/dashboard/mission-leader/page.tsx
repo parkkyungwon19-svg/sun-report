@@ -10,6 +10,7 @@ import DeleteReportButton from "@/components/dashboard/DeleteReportButton";
 import { getSunsByMission } from "@/lib/constants/sun-directory";
 import { getThisSunday, formatDate } from "@/lib/utils/report-aggregator";
 import MissionCalendar from "@/components/dashboard/MissionCalendar";
+import PastorMessageCard from "@/components/dashboard/PastorMessageCard";
 
 export default async function MissionLeaderDashboard({
   searchParams,
@@ -159,6 +160,9 @@ export default async function MissionLeaderDashboard({
           </div>
         </CardContent>
       </Card>
+
+      {/* 목사님 메시지 */}
+      <PastorMessageCard userId={user.id} />
 
       {/* 소속 순 목록 */}
       <Card>

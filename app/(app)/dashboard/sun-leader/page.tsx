@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlusCircle, Clock, CheckCircle2, ChevronRight } from "lucide-react";
 import SunReportList from "@/components/dashboard/SunReportList";
+import PastorMessageCard from "@/components/dashboard/PastorMessageCard";
 
 export default async function SunLeaderDashboard() {
   const supabase = await createClient();
@@ -98,6 +99,9 @@ export default async function SunLeaderDashboard() {
           </Link>
         </Button>
       )}
+
+      {/* 목사님 메시지 */}
+      <PastorMessageCard userId={user.id} />
 
       {/* 지난 보고서 목록 */}
       <Card>
