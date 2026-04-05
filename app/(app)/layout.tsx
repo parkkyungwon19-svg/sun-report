@@ -20,7 +20,7 @@ export default async function AppLayout({
     .eq("id", user.id)
     .single();
 
-  if (!profile) redirect("/login");
+  if (!profile) redirect("/setup");
   if (profile.status === "pending") redirect("/pending");
   if (profile.status === "rejected") redirect("/login");
 
