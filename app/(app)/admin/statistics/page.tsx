@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, BookOpen, Heart, TrendingUp, Megaphone } from "lucide-react";
 import { StatisticsCharts } from "@/components/charts/StatisticsCharts";
 import { StatisticsDownloadButtons } from "@/components/charts/StatisticsDownloadButtons";
+import { AdminPdfDownload } from "@/components/admin/AdminPdfDownload";
 
 export default async function StatisticsPage() {
   const supabase = await createClient();
@@ -80,20 +81,23 @@ export default async function StatisticsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         <h2 className="text-xl font-bold text-primary">통계 현황</h2>
-        <StatisticsDownloadButtons
-          weeks={weeks}
-          missionChartData={missionChartData}
-          latestDate={latestDate}
-          summary={{
-            latestAttend: latestWeek?.attend ?? 0,
-            latestOffering: latestWeek?.offering ?? 0,
-            latestBible: latestWeek?.bible ?? 0,
-            avgAttend,
-            evangelismCount,
-          }}
-        />
+        <div className="flex items-center gap-2 flex-wrap">
+          <AdminPdfDownload />
+          <StatisticsDownloadButtons
+            weeks={weeks}
+            missionChartData={missionChartData}
+            latestDate={latestDate}
+            summary={{
+              latestAttend: latestWeek?.attend ?? 0,
+              latestOffering: latestWeek?.offering ?? 0,
+              latestBible: latestWeek?.bible ?? 0,
+              avgAttend,
+              evangelismCount,
+            }}
+          />
+        </div>
       </div>
 
       {/* 요약 카드 */}

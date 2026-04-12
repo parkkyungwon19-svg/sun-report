@@ -8,6 +8,7 @@ import { CheckCircle2, Clock, AlertCircle, ChevronRight, ClipboardList, Users, D
 import AdminDeleteButton from "@/components/dashboard/AdminDeleteButton";
 import { getThisSunday, formatDate } from "@/lib/utils/report-aggregator";
 import { MISSION_COUNT, SUN_COUNT } from "@/lib/constants/sun-directory";
+import { AdminPdfDownload } from "@/components/admin/AdminPdfDownload";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -56,13 +57,16 @@ export default async function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-primary">
-          유진성 목사님, 안녕하세요
-        </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {thisSunday} 주일 전체 보고 현황
-        </p>
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <h2 className="text-xl font-bold text-primary">
+            유진성 목사님, 안녕하세요
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {thisSunday} 주일 전체 보고 현황
+          </p>
+        </div>
+        <AdminPdfDownload />
       </div>
 
       {/* 전체 통계 */}

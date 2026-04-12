@@ -6,6 +6,7 @@ import { SUN_DIRECTORY } from "@/lib/constants/sun-directory";
 import { getThisSunday, formatDate } from "@/lib/utils/report-aggregator";
 import { WeeklyReportExporter, type SunRow } from "@/components/admin/WeeklyReportExporter";
 import { DateSelector } from "@/components/admin/DateSelector";
+import { AdminPdfDownload } from "@/components/admin/AdminPdfDownload";
 
 export default async function WeeklyReportPage({
   searchParams,
@@ -73,9 +74,12 @@ export default async function WeeklyReportPage({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-primary">선교회별 예배 보고 현황</h2>
-        <Badge variant="outline">{submittedCount}/44 제출</Badge>
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div>
+          <h2 className="text-xl font-bold text-primary">선교회별 예배 보고 현황</h2>
+          <Badge variant="outline" className="mt-1">{submittedCount}/44 제출</Badge>
+        </div>
+        <AdminPdfDownload />
       </div>
 
       {/* 날짜 선택 */}

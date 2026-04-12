@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle, Clock } from "lucide-react";
 import { SUN_DIRECTORY } from "@/lib/constants/sun-directory";
 import { getThisSunday, formatDate } from "@/lib/utils/report-aggregator";
+import { AdminPdfDownload } from "@/components/admin/AdminPdfDownload";
 
 export default async function OverviewPage() {
   const supabase = await createClient();
@@ -33,9 +34,12 @@ export default async function OverviewPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-primary">전체 보고 현황</h2>
-        <p className="text-sm text-muted-foreground">{thisSunday}</p>
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div>
+          <h2 className="text-xl font-bold text-primary">전체 보고 현황</h2>
+          <p className="text-sm text-muted-foreground">{thisSunday}</p>
+        </div>
+        <AdminPdfDownload />
       </div>
 
       <Card>
