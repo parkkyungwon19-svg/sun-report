@@ -46,7 +46,6 @@ export default function AppNav({ profile }: { profile: Profile }) {
 
   async function handleBellClick() {
     const supabase = createClient();
-    // 미읽은 알림 id 조회 후 읽음 처리
     const { data } = await supabase
       .from("notifications")
       .select("id")
@@ -77,75 +76,89 @@ export default function AppNav({ profile }: { profile: Profile }) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-primary text-primary-foreground shadow-sm">
-      <div className="container mx-auto max-w-2xl px-4 h-14 flex items-center justify-between">
+      <div className="container mx-auto max-w-2xl px-4 h-16 flex items-center justify-between">
+        {/* 로고 + 앱이름 */}
         <Link href={dashboardHref} className="flex items-center gap-2">
-          <Image src="/logo.png" alt="로고" width={28} height={28} />
-          <span className="font-bold text-base">순보고</span>
+          <Image src="/logo.png" alt="로고" width={30} height={30} />
+          <span className="font-bold text-lg">순보고</span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          {/* 이름·역할 */}
           <span className="text-sm opacity-90 hidden sm:block">
             {profile.name}{" "}
             <span className="opacity-70">({ROLE_LABEL[profile.role]})</span>
           </span>
 
           <nav className="flex items-center gap-1">
+            {/* 홈 */}
             <Button
               variant="ghost"
               size="sm"
               asChild
-              className="text-primary-foreground hover:bg-primary-foreground/10"
+              className="text-primary-foreground hover:bg-primary-foreground/10 flex flex-col h-12 gap-0 px-2"
             >
               <Link href={dashboardHref}>
-                <LayoutDashboard className="w-4 h-4" />
+                <LayoutDashboard className="w-5 h-5" />
+                <span className="text-[10px] leading-tight">홈</span>
               </Link>
             </Button>
+
+            {/* 순장: 보고서 작성 */}
             {profile.role === "sun_leader" && (
               <Button
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-primary-foreground hover:bg-primary-foreground/10"
+                className="text-primary-foreground hover:bg-primary-foreground/10 flex flex-col h-12 gap-0 px-2"
               >
                 <Link href="/report/sun/new">
-                  <FileText className="w-4 h-4" />
+                  <FileText className="w-5 h-5" />
+                  <span className="text-[10px] leading-tight">보고서</span>
                 </Link>
               </Button>
             )}
+
             {/* 담임목사: 메시지 발송 */}
             {profile.role === "pastor" && (
               <Button
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-primary-foreground hover:bg-primary-foreground/10"
+                className="text-primary-foreground hover:bg-primary-foreground/10 flex flex-col h-12 gap-0 px-2"
               >
                 <Link href="/admin/messages">
-                  <Send className="w-4 h-4" />
+                  <Send className="w-5 h-5" />
+                  <span className="text-[10px] leading-tight">메시지</span>
                 </Link>
               </Button>
             )}
-            {/* 알림 벨 */}
+
+            {/* 알림 */}
             <Button
               variant="ghost"
               size="sm"
               onClick={handleBellClick}
-              className="relative text-primary-foreground hover:bg-primary-foreground/10"
+              className="relative text-primary-foreground hover:bg-primary-foreground/10 flex flex-col h-12 gap-0 px-2"
             >
-              <Bell className="w-4 h-4" />
+              <Bell className="w-5 h-5" />
+              <span className="text-[10px] leading-tight">알림</span>
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 rounded-full bg-red-500 text-white text-[10px] font-bold">
+                <span className="absolute top-0.5 right-0.5 flex items-center justify-center w-4 h-4 rounded-full bg-red-500 text-white text-[10px] font-bold">
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
             </Button>
+
+            {/* 로그아웃 */}
             <Button
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="text-primary-foreground hover:bg-primary-foreground/10"
+              className="text-primary-foreground hover:bg-primary-foreground/10 flex flex-col h-12 gap-0 px-2"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-5 h-5" />
+              <span className="text-[10px] leading-tight">로그아웃</span>
             </Button>
           </nav>
         </div>

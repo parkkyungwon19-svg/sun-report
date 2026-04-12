@@ -43,10 +43,10 @@ export default async function SunLeaderDashboard() {
     <div className="space-y-6">
       {/* 인사 & 현재 상태 */}
       <div>
-        <h2 className="text-xl font-bold text-primary">
+        <h2 className="text-2xl font-bold text-primary">
           {profile.name} 순장님, 안녕하세요!
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-base text-muted-foreground mt-1">
           {profile.sun_number}순 보고 현황
         </p>
       </div>
@@ -59,22 +59,22 @@ export default async function SunLeaderDashboard() {
           <div className="flex items-center gap-3">
             {hasThisWeek && latestReport?.status === "submitted" ? (
               <>
-                <CheckCircle2 className="w-8 h-8 text-green-500 flex-shrink-0" />
+                <CheckCircle2 className="w-10 h-10 text-green-500 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold text-green-700">이번 주 제출 완료!</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-lg font-bold text-green-700">이번 주 제출 완료!</p>
+                  <p className="text-base text-muted-foreground">
                     참석인원 {latestReport?.attend_total}명
                   </p>
                 </div>
               </>
             ) : (
               <>
-                <Clock className="w-8 h-8 text-amber-500 flex-shrink-0" />
+                <Clock className="w-10 h-10 text-amber-500 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold text-amber-700">
+                  <p className="text-lg font-bold text-amber-700">
                     {hasThisWeek ? "임시저장 중" : "이번 주 보고서 미제출"}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-base text-muted-foreground">
                     예배 후 순보고서를 작성해 주세요
                   </p>
                 </div>
@@ -89,7 +89,7 @@ export default async function SunLeaderDashboard() {
         <Button
           asChild
           size="lg"
-          className="w-full h-14 text-base font-semibold bg-primary hover:bg-primary/90"
+          className="w-full h-16 text-lg font-semibold bg-primary hover:bg-primary/90"
         >
           <Link href={hasThisWeek && latestReport?.status === "draft" ? `/report/sun/${latestReport.id}` : "/report/sun/new"}>
             <PlusCircle className="w-5 h-5 mr-2" />
@@ -107,7 +107,7 @@ export default async function SunLeaderDashboard() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base">최근 보고서</CardTitle>
+            <CardTitle className="text-lg">최근 보고서</CardTitle>
             <Button variant="ghost" size="sm" asChild>
               <Link href="/report/sun/history" className="text-xs text-muted-foreground">
                 전체보기 <ChevronRight className="w-3 h-3 ml-1" />

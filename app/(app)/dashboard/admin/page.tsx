@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Clock, AlertCircle, ChevronRight, ClipboardList, Users, Download, BarChart2 } from "lucide-react";
+import { CheckCircle2, Clock, AlertCircle, ChevronRight, ClipboardList, Users, Download, BarChart2, Trophy } from "lucide-react";
 import AdminDeleteButton from "@/components/dashboard/AdminDeleteButton";
 import { getThisSunday, formatDate } from "@/lib/utils/report-aggregator";
 import { MISSION_COUNT, SUN_COUNT } from "@/lib/constants/sun-directory";
@@ -165,6 +165,24 @@ export default async function AdminDashboard() {
                 <div>
                   <p className="font-medium text-sm">사용자 관리</p>
                   <p className="text-xs text-muted-foreground">회원가입 승인 · 계정 생성 · 비밀번호 초기화</p>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
+
+      {/* 순원 점수 순위 바로가기 */}
+      <Link href="/admin/member-scores">
+        <Card className="hover:shadow-md transition-shadow cursor-pointer border-[#C9A84C]/40 bg-[#C9A84C]/5">
+          <CardContent className="pt-4 pb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Trophy className="w-5 h-5 text-[#C9A84C]" />
+                <div>
+                  <p className="font-medium text-sm">순원 점수 순위</p>
+                  <p className="text-xs text-muted-foreground">출석·전도·성경 점수 집계 — 주/월/년 등수</p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />

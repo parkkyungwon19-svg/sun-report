@@ -70,7 +70,7 @@ export default async function MissionLeaderDashboard({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-primary">
+        <h2 className="text-2xl font-bold text-primary">
           선교회 {missionId} — {profile.name} 선교회장
         </h2>
       </div>
@@ -78,7 +78,7 @@ export default async function MissionLeaderDashboard({
       {/* 달력 */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-base">보고서 달력</CardTitle>
+          <CardTitle className="text-lg">보고서 달력</CardTitle>
           <p className="text-xs text-muted-foreground">
             보고서가 있는 날짜에 점이 표시됩니다
           </p>
@@ -123,8 +123,8 @@ export default async function MissionLeaderDashboard({
         <CardContent className="pt-4 pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-sm">선교회보고서</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="font-semibold text-base">선교회보고서</p>
+              <p className="text-sm text-muted-foreground mt-0.5">
                 {missionReport
                   ? missionReport.status === "submitted"
                     ? "제출완료"
@@ -167,7 +167,7 @@ export default async function MissionLeaderDashboard({
       {/* 소속 순 목록 */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">
+          <CardTitle className="text-lg">
             소속 순 현황
             <span className="text-sm font-normal text-muted-foreground ml-2">
               {selectedDate}
@@ -190,11 +190,11 @@ export default async function MissionLeaderDashboard({
                         <div className="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0" />
                       )}
                       <div>
-                        <p className="text-sm font-medium">
+                        <p className="text-base font-medium">
                           {entry.sunNumber}순 — {entry.sunLeader}
                         </p>
                         {report?.status === "submitted" && (
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-sm text-muted-foreground">
                             참석 {report.attend_total}명
                           </p>
                         )}

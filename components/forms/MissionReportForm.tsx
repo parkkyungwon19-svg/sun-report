@@ -171,23 +171,34 @@ export default function MissionReportForm({
     }
   }
 
+  // 순보고서 멤버에서 6가지 출석 집계
+  const allMembers = sunReports.flatMap((sr) => sr.sun_report_members);
+  const attendBreakdown = [
+    { label: "삼일예배",   count: allMembers.filter((m) => m.attend_samil).length },
+    { label: "금요예배",   count: allMembers.filter((m) => m.attend_friday).length },
+    { label: "주일낮예배", count: allMembers.filter((m) => m.attend_sun_day).length },
+    { label: "주일밤예배", count: allMembers.filter((m) => m.attend_sun_eve).length },
+    { label: "순모임",     count: allMembers.filter((m) => m.attend_sun).length },
+    { label: "전도",       count: allMembers.filter((m) => m.evangelism).length },
+  ];
+
   return (
     <div className="space-y-4 pb-8">
       <Button
         variant="ghost"
         size="sm"
-        className="px-0 -ml-1 text-muted-foreground"
+        className="px-0 -ml-1 text-muted-foreground text-base"
         onClick={() => router.push("/dashboard/mission-leader")}
       >
-        <ChevronLeft className="w-4 h-4 mr-1" />
+        <ChevronLeft className="w-5 h-5 mr-1" />
         뒤로가기
       </Button>
 
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="font-medium">선교회 {profile.mission_id} — {profile.name}</p>
-          <p className="text-sm text-muted-foreground">{reportDate} 주일</p>
+          <p className="font-semibold text-lg">선교회 {profile.mission_id} — {profile.name}</p>
+          <p className="text-base text-muted-foreground">{reportDate} 주일</p>
         </div>
         {readonly && (
           <Badge className={initialData?.status === "submitted" ? "bg-green-100 text-green-800" : ""}>
@@ -199,21 +210,30 @@ export default function MissionReportForm({
       {/* 자동 집계 */}
       <Card className="bg-muted/50">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm text-muted-foreground">순보고서 자동 집계</CardTitle>
+          <CardTitle className="text-base text-muted-foreground">순보고서 자동 집계</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <p className="text-2xl font-bold text-primary">{aggregated.total_sun}</p>
-              <p className="text-xs text-muted-foreground mt-1">제출된 순</p>
+        <CardContent className="space-y-4">
+          {/* 제출 순 수 + 성경 */}
+          <div className="grid grid-cols-2 gap-3 text-center">
+            <div className="bg-white rounded-lg p-3 border">
+              <p className="text-3xl font-bold text-primary">{aggregated.total_sun}</p>
+              <p className="text-sm text-muted-foreground mt-1">제출된 순</p>
             </div>
-            <div>
-              <p className="text-2xl font-bold text-primary">{aggregated.total_attend}</p>
-              <p className="text-xs text-muted-foreground mt-1">총 참석인원</p>
+            <div className="bg-white rounded-lg p-3 border">
+              <p className="text-3xl font-bold text-primary">{aggregated.total_bible}</p>
+              <p className="text-sm text-muted-foreground mt-1">성경 읽은 장수</p>
             </div>
-            <div>
-              <p className="text-2xl font-bold text-primary">{aggregated.total_bible}</p>
-              <p className="text-xs text-muted-foreground mt-1">성경 읽은 장수</p>
+          </div>
+          {/* 6가지 출석 인원 */}
+          <div>
+            <p className="text-sm font-medium text-muted-foreground mb-2">출석 인원 현황</p>
+            <div className="grid grid-cols-3 gap-2">
+              {attendBreakdown.map(({ label, count }) => (
+                <div key={label} className="text-center bg-white rounded-lg py-2 px-1 border">
+                  <p className="text-2xl font-bold text-primary">{count}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </CardContent>

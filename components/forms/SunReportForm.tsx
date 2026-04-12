@@ -53,6 +53,15 @@ const EMPTY_MEMBER = (): MemberRow => ({
   member_note: "",
 });
 
+// 6가지 출석 항목 정의
+const ATTEND_COLS: { key: keyof MemberRow; label: string }[] = [
+  { key: "attend_samil",   label: "삼일" },
+  { key: "attend_friday",  label: "금요" },
+  { key: "attend_sun_day", label: "주낮" },
+  { key: "attend_sun_eve", label: "주밤" },
+  { key: "attend_sun",     label: "순모임" },
+  { key: "evangelism",     label: "전도" },
+];
 
 export default function SunReportForm({
   profile,
@@ -69,7 +78,7 @@ export default function SunReportForm({
 
   async function handleDateChange(newDate: string) {
     setSelectedDate(newDate);
-    if (!newDate || reportId) return; // 기존 보고서 수정 시 날짜 변경 불가
+    if (!newDate || reportId) return;
     setDateChecking(true);
     try {
       const supabase = createClient();
@@ -87,24 +96,13 @@ export default function SunReportForm({
     }
   }
 
-  // 기본 정보
-  const [worshipAt, setWorshipAt] = useState(
-    initialData?.report.worship_at ?? ""
-  );
-  const [worshipPlace, setWorshipPlace] = useState(
-    initialData?.report.worship_place ?? ""
-  );
-  const [worshipLeader, setWorshipLeader] = useState(
-    initialData?.report.worship_leader ?? ""
-  );
-  const [specialNote, setSpecialNote] = useState(
-    initialData?.report.special_note ?? ""
-  );
+  const [worshipAt, setWorshipAt] = useState(initialData?.report.worship_at ?? "");
+  const [worshipPlace, setWorshipPlace] = useState(initialData?.report.worship_place ?? "");
+  const [worshipLeader, setWorshipLeader] = useState(initialData?.report.worship_leader ?? "");
+  const [specialNote, setSpecialNote] = useState(initialData?.report.special_note ?? "");
 
-  // 순원 목록
   const defaultMembers = (): MemberRow[] => {
     const names = getSunMembers(profile.sun_number!);
-    // 순장 본인을 맨 앞에 포함
     const allNames = [profile.name, ...names];
     return allNames.map((name) => ({ ...EMPTY_MEMBER(), member_name: name }));
   };
@@ -127,7 +125,7 @@ export default function SunReportForm({
       : defaultMembers()
   );
 
-  const [expandedIdx, setExpandedIdx] = useState<number | null>(0);
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
 
   const updateMember = useCallback(
     (idx: number, key: keyof MemberRow, value: MemberRow[keyof MemberRow]) => {
@@ -150,18 +148,18 @@ export default function SunReportForm({
     setExpandedIdx(null);
   };
 
-  const autoAttend = members.filter((m) => m.attend_sun).length;
+  // 6가지 출석 집계
+  const attendCounts = ATTEND_COLS.map(({ key }) =>
+    members.filter((m) => m[key] === true).length
+  );
+  const attendTotal = attendCounts[4]; // 순모임 참석 (attend_sun)
   const autoBible = members.reduce((s, m) => s + (m.bible_read || 0), 0);
 
-  // 성경장수 수동 입력 (미등록 순원 대응)
   const [manualBible, setManualBible] = useState<string>(
     initialData?.report.bible_chapters
       ? initialData.report.bible_chapters.toString()
       : ""
   );
-
-  // 참석인원: 순모임 체크 자동 집계
-  const attendTotal = autoAttend;
   const bibleChapters = manualBible !== "" ? parseInt(manualBible) || 0 : autoBible;
 
   async function saveReport(status: "draft" | "submitted") {
@@ -214,19 +212,19 @@ export default function SunReportForm({
 
   return (
     <div className="space-y-4 pb-8">
-      <Button variant="ghost" size="sm" className="px-0 -ml-1 text-muted-foreground" onClick={() => router.push("/dashboard/sun-leader")}>
-        <ChevronLeft className="w-4 h-4 mr-1" />
+      <Button variant="ghost" size="sm" className="px-0 -ml-1 text-muted-foreground text-base" onClick={() => router.push("/dashboard/sun-leader")}>
+        <ChevronLeft className="w-5 h-5 mr-1" />
         뒤로가기
       </Button>
+
       {/* 기본 정보 */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">
+          <CardTitle className="text-lg">
             {profile.sun_number}순 — {profile.name} 순장
           </CardTitle>
-          {/* 날짜 선택 (기존 보고서 수정 시에는 고정) */}
           {reportId ? (
-            <p className="text-sm text-muted-foreground">{selectedDate} 주일</p>
+            <p className="text-base text-muted-foreground">{selectedDate} 주일</p>
           ) : (
             <div className="flex items-center gap-2">
               <Input
@@ -234,11 +232,11 @@ export default function SunReportForm({
                 value={selectedDate}
                 onChange={(e) => handleDateChange(e.target.value)}
                 disabled={dateChecking}
-                className="h-9 w-44 text-sm"
+                className="h-10 w-44 text-base"
                 max={new Date().toISOString().split("T")[0]}
               />
               {dateChecking && (
-                <span className="text-xs text-muted-foreground">확인 중...</span>
+                <span className="text-sm text-muted-foreground">확인 중...</span>
               )}
             </div>
           )}
@@ -246,51 +244,57 @@ export default function SunReportForm({
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label className="text-sm">예배 일시</Label>
+              <Label className="text-base">예배 일시</Label>
               <Input
                 value={worshipAt}
                 onChange={(e) => setWorshipAt(e.target.value)}
                 placeholder="예) 2024.4.7 오전11시"
-                className="h-11"
+                className="h-11 text-base"
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-sm">예배 장소</Label>
+              <Label className="text-base">예배 장소</Label>
               <Input
                 value={worshipPlace}
                 onChange={(e) => setWorshipPlace(e.target.value)}
                 placeholder="예) 본당 3구역"
-                className="h-11"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label className="text-sm">참석인원 (순모임)</Label>
-              <div className="h-11 px-3 flex items-center rounded-md border bg-muted/50 text-base font-semibold text-primary">
-                {attendTotal}명
-              </div>
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm">성경읽은 장수</Label>
-              <Input
-                type="number"
-                inputMode="numeric"
-                value={manualBible}
-                onChange={(e) => setManualBible(e.target.value)}
-                placeholder={autoBible > 0 ? String(autoBible) : "0"}
-                className="h-11"
-                min={0}
+                className="h-11 text-base"
               />
             </div>
           </div>
           <div className="space-y-1">
-            <Label className="text-sm">인도자</Label>
+            <Label className="text-base">인도자</Label>
             <Input
               value={worshipLeader}
               onChange={(e) => setWorshipLeader(e.target.value)}
               placeholder="인도자 이름"
-              className="h-11"
+              className="h-11 text-base"
+            />
+          </div>
+
+          {/* 6가지 출석 집계 */}
+          <div>
+            <Label className="text-base mb-2 block">출석 현황 요약</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {ATTEND_COLS.map(({ label }, i) => (
+                <div key={label} className="text-center bg-muted/40 rounded-lg py-2 px-1 border">
+                  <p className="text-2xl font-bold text-primary">{attendCounts[i]}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <Label className="text-base">성경읽은 장수</Label>
+            <Input
+              type="number"
+              inputMode="numeric"
+              value={manualBible}
+              onChange={(e) => setManualBible(e.target.value)}
+              placeholder={autoBible > 0 ? String(autoBible) : "0"}
+              className="h-11 text-base"
+              min={0}
             />
           </div>
         </CardContent>
@@ -300,88 +304,55 @@ export default function SunReportForm({
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base">
+            <CardTitle className="text-lg">
               순원 출석 현황{" "}
               <span className="text-sm font-normal text-muted-foreground">
-                ({members.filter((m) => m.member_name.trim()).length}명 등록)
+                ({members.filter((m) => m.member_name.trim()).length}명)
               </span>
             </CardTitle>
           </div>
-          {/* 집계 요약 */}
-          <div className="flex gap-4 text-sm">
-            <span className="text-primary font-medium">
-              순모임 참석 {attendTotal}명
-            </span>
-            <span className="text-muted-foreground">
-              성경 {bibleChapters}장
-            </span>
-          </div>
         </CardHeader>
+
         {/* 컬럼 헤더 */}
-        <div className="flex items-center gap-1 px-4 py-2 bg-muted/40 border-b text-[11px] text-muted-foreground font-medium">
-          <span className="w-[4.5rem] shrink-0">이름</span>
-          <span className="w-10 text-center shrink-0">주일낮</span>
-          <span className="w-10 text-center shrink-0">순모임</span>
-          <span className="w-8 text-center shrink-0">전도</span>
-          <span className="flex-1 text-center">성경(장)</span>
-          <span className="w-6 shrink-0" />
+        <div className="flex items-center px-3 py-2 bg-muted/50 border-b border-t">
+          <span className="flex-1 text-sm font-semibold text-muted-foreground">이름</span>
+          {ATTEND_COLS.map(({ label }) => (
+            <span key={label} className="w-9 text-center text-[11px] font-semibold text-muted-foreground shrink-0">
+              {label}
+            </span>
+          ))}
+          <span className="w-7 shrink-0" />
         </div>
+
         <CardContent className="p-0">
           {members.map((member, idx) => (
-            <div key={idx} className="border-b last:border-0">
-              {/* 인라인 입력 행 */}
-              <div className="flex items-center gap-1 px-4 py-2.5">
-                {/* 이름 */}
-                <div className="w-[4.5rem] shrink-0">
+            <div
+              key={idx}
+              className={`border-b last:border-0 ${idx % 2 === 0 ? "bg-white" : "bg-sky-50/60"}`}
+            >
+              {/* 인라인 행 — 이름 + 6가지 체크박스 */}
+              <div className="flex items-center px-3 py-3">
+                <div className="flex-1 pr-1 min-w-0">
                   <Input
                     value={member.member_name}
                     onChange={(e) => updateMember(idx, "member_name", e.target.value)}
                     placeholder="이름"
-                    className="h-9 text-sm px-2"
+                    className="h-10 text-base px-2"
                   />
                 </div>
-                {/* 주일낮 */}
-                <div className="w-10 flex justify-center shrink-0">
-                  <Checkbox
-                    checked={member.attend_sun_day}
-                    onCheckedChange={(v) => updateMember(idx, "attend_sun_day", !!v)}
-                    className="w-5 h-5"
-                  />
-                </div>
-                {/* 순모임 */}
-                <div className="w-10 flex justify-center shrink-0">
-                  <Checkbox
-                    checked={member.attend_sun}
-                    onCheckedChange={(v) => updateMember(idx, "attend_sun", !!v)}
-                    className="w-5 h-5"
-                  />
-                </div>
-                {/* 전도 */}
-                <div className="w-8 flex justify-center shrink-0">
-                  <Checkbox
-                    checked={member.evangelism}
-                    onCheckedChange={(v) => updateMember(idx, "evangelism", !!v)}
-                    className="w-5 h-5"
-                  />
-                </div>
-                {/* 성경장수 */}
-                <div className="flex-1">
-                  <Input
-                    type="number"
-                    inputMode="numeric"
-                    value={member.bible_read || ""}
-                    onChange={(e) =>
-                      updateMember(idx, "bible_read", parseInt(e.target.value) || 0)
-                    }
-                    placeholder="0"
-                    className="h-9 text-sm px-2 text-center"
-                    min={0}
-                  />
-                </div>
-                {/* 더보기 토글 */}
+                {ATTEND_COLS.map(({ key }) => (
+                  <div key={key} className="w-9 flex justify-center shrink-0">
+                    <Checkbox
+                      checked={member[key] as boolean}
+                      onCheckedChange={(v) => updateMember(idx, key, !!v)}
+                      className="w-5 h-5"
+                    />
+                  </div>
+                ))}
+                {/* 상세 펼치기 버튼 */}
                 <button
                   type="button"
-                  className="w-6 flex justify-center"
+                  className="w-7 flex justify-center shrink-0"
                   onClick={() => setExpandedIdx(expandedIdx === idx ? null : idx)}
                 >
                   {expandedIdx === idx ? (
@@ -392,40 +363,48 @@ export default function SunReportForm({
                 </button>
               </div>
 
-              {/* 추가 항목 (삼일·금요·주일밤·주보·비고) */}
+              {/* 펼침: 성경장수 + 주보전달 + 메모 + 삭제 */}
               {expandedIdx === idx && (
-                <div className="px-4 pb-3 space-y-2 bg-muted/20">
-                  <div className="grid grid-cols-4 gap-x-3 gap-y-2">
-                    {[
-                      { key: "attend_samil" as const, label: "삼일" },
-                      { key: "attend_friday" as const, label: "금요" },
-                      { key: "attend_sun_eve" as const, label: "주일밤" },
-                      { key: "bulletin_recv" as const, label: "주보전달" },
-                    ].map(({ key, label }) => (
-                      <label key={key} className="flex items-center gap-1.5 cursor-pointer">
+                <div className="px-3 pb-3 space-y-2 bg-muted/20 border-t border-dashed">
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    <div className="space-y-1">
+                      <Label className="text-sm text-muted-foreground">성경읽은 장수</Label>
+                      <Input
+                        type="number"
+                        inputMode="numeric"
+                        value={member.bible_read || ""}
+                        onChange={(e) => updateMember(idx, "bible_read", parseInt(e.target.value) || 0)}
+                        placeholder="0"
+                        className="h-9 text-base text-center"
+                        min={0}
+                      />
+                    </div>
+                    <div className="flex items-end pb-1">
+                      <label className="flex items-center gap-2 cursor-pointer">
                         <Checkbox
-                          checked={member[key] as boolean}
-                          onCheckedChange={(v) => updateMember(idx, key, !!v)}
+                          checked={member.bulletin_recv}
+                          onCheckedChange={(v) => updateMember(idx, "bulletin_recv", !!v)}
+                          className="w-5 h-5"
                         />
-                        <span className="text-sm">{label}</span>
+                        <span className="text-base">주보전달</span>
                       </label>
-                    ))}
+                    </div>
                   </div>
                   <Input
                     value={member.member_note}
                     onChange={(e) => updateMember(idx, "member_note", e.target.value)}
-                    placeholder="개별 보고사항 (선택)"
-                    className="h-9"
+                    placeholder="개별 메모 (선택)"
+                    className="h-9 text-base"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="text-destructive hover:text-destructive/80 px-0 h-7"
+                    className="text-destructive hover:text-destructive/80 px-0 h-8 text-sm"
                     onClick={() => removeMember(idx)}
                   >
-                    <Trash2 className="w-3.5 h-3.5 mr-1" />
-                    삭제
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    이 순원 삭제
                   </Button>
                 </div>
               )}
@@ -435,10 +414,10 @@ export default function SunReportForm({
           {/* 순원 추가 버튼 */}
           <button
             type="button"
-            className="w-full flex items-center justify-center gap-2 py-3 text-sm text-primary hover:bg-primary/5 transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-4 text-base text-primary hover:bg-primary/5 transition-colors font-medium"
             onClick={addMember}
           >
-            <PlusCircle className="w-4 h-4" />
+            <PlusCircle className="w-5 h-5" />
             순원 추가
           </button>
         </CardContent>
@@ -447,7 +426,7 @@ export default function SunReportForm({
       {/* 특별 보고사항 */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">특별보고사항</CardTitle>
+          <CardTitle className="text-lg">특별보고사항</CardTitle>
         </CardHeader>
         <CardContent>
           <Textarea
@@ -455,7 +434,7 @@ export default function SunReportForm({
             onChange={(e) => setSpecialNote(e.target.value)}
             placeholder="기도제목, 특별한 사항 등을 적어주세요 (선택)"
             rows={3}
-            className="resize-none"
+            className="resize-none text-base"
           />
         </CardContent>
       </Card>
@@ -466,19 +445,19 @@ export default function SunReportForm({
       <div className="flex gap-3">
         <Button
           variant="outline"
-          className="flex-1 h-12"
+          className="flex-1 h-14 text-base"
           onClick={() => saveReport("draft")}
           disabled={saving || submitting}
         >
-          <Save className="w-4 h-4 mr-2" />
+          <Save className="w-5 h-5 mr-2" />
           {saving ? "저장 중..." : "임시저장"}
         </Button>
         <Button
-          className="flex-1 h-12 bg-primary hover:bg-primary/90 font-semibold"
+          className="flex-1 h-14 bg-primary hover:bg-primary/90 font-semibold text-base"
           onClick={() => saveReport("submitted")}
           disabled={saving || submitting}
         >
-          <Send className="w-4 h-4 mr-2" />
+          <Send className="w-5 h-5 mr-2" />
           {submitting ? "제출 중..." : "제출하기"}
         </Button>
       </div>

@@ -12,6 +12,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { SUN_DIRECTORY } from "@/lib/constants/sun-directory";
 import type { Role } from "@/types/database";
+import { idToEmail, validateId } from "@/lib/utils/id-to-email";
 
 const MISSION_NAMES = ["1선교회", "2선교회", "3선교회", "4선교회", "5선교회", "6선교회", "7선교회", "8선교회", "9선교회", "10선교회", "11선교회", "12선교회"];
 
@@ -20,7 +21,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState<Role | "">("");
@@ -37,6 +38,15 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!role) { toast.error("역할을 선택해주세요"); return; }
+
+    const idError = validateId(loginId);
+    if (idError) { toast.error(idError); return; }
+
+    if (password.length < 4) {
+      toast.error("비밀번호는 4자리 이상이어야 합니다");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -44,7 +54,7 @@ export default function RegisterPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email,
+          email: idToEmail(loginId),
           password,
           name,
           phone: phone.replace(/[^0-9]/g, ""),
@@ -88,9 +98,9 @@ export default function RegisterPage() {
 
               {/* 역할 선택 */}
               <div className="space-y-2">
-                <Label>역할</Label>
+                <Label className="text-base font-medium">역할</Label>
                 <Select value={role} onValueChange={(v) => { setRole(v as Role); setSunNumber(""); setMissionId(""); }}>
-                  <SelectTrigger className="h-12">
+                  <SelectTrigger className="h-12 text-base">
                     <SelectValue placeholder="역할을 선택하세요" />
                   </SelectTrigger>
                   <SelectContent>
@@ -104,9 +114,9 @@ export default function RegisterPage() {
               {/* 순장: 순 선택 */}
               {role === "sun_leader" && (
                 <div className="space-y-2">
-                  <Label>담당 순</Label>
+                  <Label className="text-base font-medium">담당 순</Label>
                   <Select value={sunNumber} onValueChange={handleSunSelect}>
-                    <SelectTrigger className="h-12">
+                    <SelectTrigger className="h-12 text-base">
                       <SelectValue placeholder="담당 순을 선택하세요" />
                     </SelectTrigger>
                     <SelectContent>
@@ -128,9 +138,9 @@ export default function RegisterPage() {
               {/* 선교회장: 선교회 선택 */}
               {role === "mission_leader" && (
                 <div className="space-y-2">
-                  <Label>소속 선교회</Label>
+                  <Label className="text-base font-medium">소속 선교회</Label>
                   <Select value={missionId} onValueChange={(v) => setMissionId(v ?? "")}>
-                    <SelectTrigger className="h-12">
+                    <SelectTrigger className="h-12 text-base">
                       <SelectValue placeholder="선교회를 선택하세요" />
                     </SelectTrigger>
                     <SelectContent>
@@ -144,7 +154,7 @@ export default function RegisterPage() {
 
               {/* 이름 */}
               <div className="space-y-2">
-                <Label htmlFor="name">이름</Label>
+                <Label htmlFor="name" className="text-base font-medium">이름</Label>
                 <Input
                   id="name"
                   value={name}
@@ -155,9 +165,44 @@ export default function RegisterPage() {
                 />
               </div>
 
+              {/* 아이디 */}
+              <div className="space-y-2">
+                <Label htmlFor="loginId" className="text-base font-medium">아이디</Label>
+                <Input
+                  id="loginId"
+                  type="text"
+                  value={loginId}
+                  onChange={(e) => setLoginId(e.target.value)}
+                  placeholder="아이디를 입력하세요"
+                  required
+                  autoComplete="username"
+                  className="h-12 text-base"
+                />
+                <p className="text-xs text-muted-foreground">
+                  영문/숫자 4자 이상, 또는 한글 2자 이상
+                </p>
+              </div>
+
+              {/* 비밀번호 */}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-base font-medium">비밀번호</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="4자리 이상"
+                  required
+                  minLength={4}
+                  className="h-12 text-base"
+                />
+              </div>
+
               {/* 전화번호 */}
               <div className="space-y-2">
-                <Label htmlFor="phone">전화번호 <span className="text-xs text-muted-foreground">(카카오 알림톡 수신)</span></Label>
+                <Label htmlFor="phone" className="text-base font-medium">
+                  전화번호 <span className="text-xs text-muted-foreground font-normal">(선택)</span>
+                </Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -165,35 +210,6 @@ export default function RegisterPage() {
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="010-0000-0000"
                   inputMode="numeric"
-                  className="h-12 text-base"
-                />
-              </div>
-
-              {/* 이메일 */}
-              <div className="space-y-2">
-                <Label htmlFor="email">이메일</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="이메일을 입력하세요"
-                  required
-                  className="h-12 text-base"
-                />
-              </div>
-
-              {/* 비밀번호 */}
-              <div className="space-y-2">
-                <Label htmlFor="password">비밀번호</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="6자리 이상"
-                  required
-                  minLength={6}
                   className="h-12 text-base"
                 />
               </div>

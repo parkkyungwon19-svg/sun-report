@@ -11,42 +11,50 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { idToEmail, validateId } from "@/lib/utils/id-to-email";
 
-const SAVED_EMAIL_KEY = "sunbogo_saved_email";
+const SAVED_ID_KEY = "sunbogo_saved_id";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberEmail, setRememberEmail] = useState(false);
+  const [rememberLogin, setRememberLogin] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(SAVED_EMAIL_KEY);
+    const saved = localStorage.getItem(SAVED_ID_KEY);
     if (saved) {
-      setEmail(saved);
-      setRememberEmail(true);
+      setLoginId(saved);
+      setRememberLogin(true);
     }
   }, []);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
+
+    const idError = validateId(loginId);
+    if (idError) {
+      toast.error(idError);
+      return;
+    }
+
     setLoading(true);
 
-    if (rememberEmail) {
-      localStorage.setItem(SAVED_EMAIL_KEY, email);
+    if (rememberLogin) {
+      localStorage.setItem(SAVED_ID_KEY, loginId);
     } else {
-      localStorage.removeItem(SAVED_EMAIL_KEY);
+      localStorage.removeItem(SAVED_ID_KEY);
     }
 
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      email: idToEmail(loginId),
       password,
     });
 
     if (error) {
-      toast.error("로그인 실패: " + error.message);
+      toast.error("로그인 실패: 아이디 또는 비밀번호를 확인해주세요");
       setLoading(false);
       return;
     }
@@ -74,20 +82,23 @@ export default function LoginPage() {
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">이메일</Label>
+                <Label htmlFor="loginId" className="text-base font-medium">아이디</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="이메일을 입력하세요"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="loginId"
+                  type="text"
+                  placeholder="아이디를 입력하세요"
+                  value={loginId}
+                  onChange={(e) => setLoginId(e.target.value)}
                   required
-                  autoComplete="email"
+                  autoComplete="username"
                   className="h-12 text-base"
                 />
+                <p className="text-xs text-muted-foreground">
+                  영문/숫자 4자 이상, 또는 한글 2자 이상
+                </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">비밀번호</Label>
+                <Label htmlFor="password" className="text-base font-medium">비밀번호</Label>
                 <Input
                   id="password"
                   type="password"
@@ -102,11 +113,11 @@ export default function LoginPage() {
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="remember"
-                  checked={rememberEmail}
-                  onCheckedChange={(v) => setRememberEmail(!!v)}
+                  checked={rememberLogin}
+                  onCheckedChange={(v) => setRememberLogin(!!v)}
                 />
                 <Label htmlFor="remember" className="text-sm font-normal cursor-pointer">
-                  ID 기억하기
+                  아이디 기억하기
                 </Label>
               </div>
               <Button
