@@ -1,9 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { getThisSunday, formatDate } from "@/lib/utils/report-aggregator";
 import { Trophy, ChevronLeft } from "lucide-react";
+import MemberScoresTable from "./MemberScoresTable";
 
 // ─── 점수 기준 ────────────────────────────────
 const SCORE_ATTEND   = 1;    // 출석 항목당 1점 (삼일·금요·주낮·주밤·순모임)
@@ -171,37 +172,6 @@ export default async function MemberScoresPage({
 
   const isWeek = period === "week";
 
-  // ─── 셀 렌더 헬퍼 ────────────────────────────
-  function AttendCell({ val }: { val: number }) {
-    if (isWeek) {
-      return val ? (
-        <span className="text-green-600 font-bold">✓</span>
-      ) : (
-        <span className="text-gray-300">−</span>
-      );
-    }
-    return val > 0 ? (
-      <span className="text-primary font-semibold">{val}</span>
-    ) : (
-      <span className="text-gray-300">0</span>
-    );
-  }
-
-  function EvangelCell({ val }: { val: number }) {
-    if (isWeek) {
-      return val ? (
-        <span className="text-amber-600 font-bold">✓</span>
-      ) : (
-        <span className="text-gray-300">−</span>
-      );
-    }
-    return val > 0 ? (
-      <span className="text-amber-600 font-bold">{val}</span>
-    ) : (
-      <span className="text-gray-300">0</span>
-    );
-  }
-
   return (
     <div className="space-y-4 pb-8">
       {/* 뒤로가기 + 헤더 */}
@@ -282,100 +252,7 @@ export default async function MemberScoresPage({
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">전체 순위표</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs min-w-[560px]">
-                <thead>
-                  <tr className="border-b bg-muted/50 text-muted-foreground">
-                    <th className="text-center px-2 py-3 font-semibold w-10">순위</th>
-                    <th className="text-left px-3 py-3 font-semibold">이름</th>
-                    <th className="text-center px-1 py-3 font-semibold w-10">삼일</th>
-                    <th className="text-center px-1 py-3 font-semibold w-10">금요</th>
-                    <th className="text-center px-1 py-3 font-semibold w-10">주낮</th>
-                    <th className="text-center px-1 py-3 font-semibold w-10">주밤</th>
-                    <th className="text-center px-1 py-3 font-semibold w-10">순모임</th>
-                    <th className="text-center px-1 py-3 font-semibold w-10 text-amber-700">전도</th>
-                    <th className="text-center px-1 py-3 font-semibold w-14">성경(장)</th>
-                    <th className="text-right px-3 py-3 font-semibold w-16 text-primary">총점</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {ranked.map((m, i) => {
-                    const rankBadge =
-                      m.rank === 1 ? "🥇" :
-                      m.rank === 2 ? "🥈" :
-                      m.rank === 3 ? "🥉" : null;
-
-                    return (
-                      <tr
-                        key={`${m.memberName}-${m.sunNumber}`}
-                        className={`border-b last:border-0 ${
-                          i % 2 === 0 ? "" : "bg-muted/20"
-                        } ${m.rank <= 3 ? "font-medium" : ""}`}
-                      >
-                        {/* 순위 */}
-                        <td className="text-center px-2 py-2.5">
-                          {rankBadge ? (
-                            <span className="text-base">{rankBadge}</span>
-                          ) : (
-                            <span className="text-muted-foreground font-normal">{m.rank}</span>
-                          )}
-                        </td>
-                        {/* 이름 + 순 번호 */}
-                        <td className="px-3 py-2.5">
-                          <div className="font-medium text-sm">{m.memberName}</div>
-                          <div className="text-[10px] text-muted-foreground">
-                            {m.sunNumber}순 · {m.missionId}선교회
-                          </div>
-                        </td>
-                        {/* 삼일 */}
-                        <td className="text-center px-1 py-2.5">
-                          <AttendCell val={m.samil} />
-                        </td>
-                        {/* 금요 */}
-                        <td className="text-center px-1 py-2.5">
-                          <AttendCell val={m.friday} />
-                        </td>
-                        {/* 주낮 */}
-                        <td className="text-center px-1 py-2.5">
-                          <AttendCell val={m.sunDay} />
-                        </td>
-                        {/* 주밤 */}
-                        <td className="text-center px-1 py-2.5">
-                          <AttendCell val={m.sunEve} />
-                        </td>
-                        {/* 순모임 */}
-                        <td className="text-center px-1 py-2.5">
-                          <AttendCell val={m.sun} />
-                        </td>
-                        {/* 전도 */}
-                        <td className="text-center px-1 py-2.5">
-                          <EvangelCell val={m.evangelism} />
-                        </td>
-                        {/* 성경 */}
-                        <td className="text-center px-1 py-2.5">
-                          {m.totalBible > 0 ? (
-                            <span className="text-blue-600">{m.totalBible}</span>
-                          ) : (
-                            <span className="text-gray-300">0</span>
-                          )}
-                        </td>
-                        {/* 총점 */}
-                        <td className="text-right px-3 py-2.5 font-bold text-primary">
-                          {m.totalScore}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+        <MemberScoresTable ranked={ranked} isWeek={isWeek} />
       )}
 
       {/* 점수 기준 안내 */}

@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { PlusCircle, Trash2, Save, Send, ChevronDown, ChevronUp, ChevronLeft } from "lucide-react";
+import { PlusCircle, Trash2, Save, Send, ChevronDown, ChevronUp, ChevronLeft, Settings2 } from "lucide-react";
 import type { Profile, SunReport, SunReportMember } from "@/types/database";
 import { getSunMembers } from "@/lib/constants/sun-directory";
 
@@ -313,103 +313,133 @@ export default function SunReportForm({
           </div>
         </CardHeader>
 
-        {/* 컬럼 헤더 */}
-        <div className="flex items-center px-3 py-2 bg-muted/50 border-b border-t">
-          <span className="flex-1 text-sm font-semibold text-muted-foreground">이름</span>
-          {ATTEND_COLS.map(({ label }) => (
-            <span key={label} className="w-9 text-center text-[11px] font-semibold text-muted-foreground shrink-0">
-              {label}
-            </span>
-          ))}
-          <span className="w-7 shrink-0" />
-        </div>
-
         <CardContent className="p-0">
-          {members.map((member, idx) => (
-            <div
-              key={idx}
-              className={`border-b last:border-0 ${idx % 2 === 0 ? "bg-white" : "bg-sky-50/60"}`}
-            >
-              {/* 인라인 행 — 이름 + 6가지 체크박스 */}
-              <div className="flex items-center px-3 py-3">
-                <div className="flex-1 pr-1 min-w-0">
-                  <Input
-                    value={member.member_name}
-                    onChange={(e) => updateMember(idx, "member_name", e.target.value)}
-                    placeholder="이름"
-                    className="h-10 text-base px-2"
-                  />
+          {members.map((member, idx) => {
+            const isOpen = expandedIdx === idx;
+            return (
+              <div
+                key={idx}
+                className={`border-b last:border-0 transition-colors duration-200 ${
+                  isOpen
+                    ? "bg-emerald-50 border-l-4 border-l-emerald-500"
+                    : idx % 2 === 0 ? "bg-white" : "bg-sky-50/60"
+                }`}
+              >
+                {/* ── 타이틀 행 ── */}
+                <div className={`flex items-center px-3 pt-2 pb-0.5 ${isOpen ? "opacity-100" : "opacity-60"}`}>
+                  <span className="flex-1 text-[11px] font-semibold text-muted-foreground">이름</span>
+                  {ATTEND_COLS.map(({ label }) => (
+                    <span
+                      key={label}
+                      className={`w-9 text-center text-[11px] font-semibold shrink-0 ${
+                        isOpen ? "text-emerald-700" : "text-muted-foreground"
+                      }`}
+                    >
+                      {label}
+                    </span>
+                  ))}
+                  <span className="w-14 shrink-0" />
                 </div>
-                {ATTEND_COLS.map(({ key }) => (
-                  <div key={key} className="w-9 flex justify-center shrink-0">
-                    <Checkbox
-                      checked={member[key] as boolean}
-                      onCheckedChange={(v) => updateMember(idx, key, !!v)}
-                      className="w-5 h-5"
+
+                {/* ── 데이터 행 ── */}
+                <div className="flex items-center px-3 py-2 gap-0">
+                  <div className="flex-1 pr-2 min-w-0">
+                    <Input
+                      value={member.member_name}
+                      onChange={(e) => updateMember(idx, "member_name", e.target.value)}
+                      placeholder="이름"
+                      className={`h-10 text-base px-2 transition-colors ${
+                        isOpen ? "border-emerald-400 bg-white ring-1 ring-emerald-300" : ""
+                      }`}
                     />
                   </div>
-                ))}
-                {/* 상세 펼치기 버튼 */}
-                <button
-                  type="button"
-                  className="w-7 flex justify-center shrink-0"
-                  onClick={() => setExpandedIdx(expandedIdx === idx ? null : idx)}
-                >
-                  {expandedIdx === idx ? (
-                    <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                  )}
-                </button>
-              </div>
-
-              {/* 펼침: 성경장수 + 주보전달 + 메모 + 삭제 */}
-              {expandedIdx === idx && (
-                <div className="px-3 pb-3 space-y-2 bg-muted/20 border-t border-dashed">
-                  <div className="grid grid-cols-2 gap-3 pt-2">
-                    <div className="space-y-1">
-                      <Label className="text-sm text-muted-foreground">성경읽은 장수</Label>
-                      <Input
-                        type="number"
-                        inputMode="numeric"
-                        value={member.bible_read || ""}
-                        onChange={(e) => updateMember(idx, "bible_read", parseInt(e.target.value) || 0)}
-                        placeholder="0"
-                        className="h-9 text-base text-center"
-                        min={0}
+                  {ATTEND_COLS.map(({ key }) => (
+                    <div key={key} className="w-9 flex justify-center shrink-0">
+                      <Checkbox
+                        checked={member[key] as boolean}
+                        onCheckedChange={(v) => updateMember(idx, key, !!v)}
+                        className={`w-6 h-6 transition-all ${
+                          isOpen
+                            ? "border-emerald-500 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
+                            : ""
+                        }`}
                       />
                     </div>
-                    <div className="flex items-end pb-1">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <Checkbox
-                          checked={member.bulletin_recv}
-                          onCheckedChange={(v) => updateMember(idx, "bulletin_recv", !!v)}
-                          className="w-5 h-5"
-                        />
-                        <span className="text-base">주보전달</span>
-                      </label>
-                    </div>
+                  ))}
+                  {/* ── 펼치기 버튼 ── */}
+                  <div className="w-14 flex justify-center shrink-0 pl-1">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedIdx(isOpen ? null : idx)}
+                      className={`flex items-center justify-center gap-1 rounded-xl px-2 py-1.5 text-xs font-bold transition-all duration-200 shadow-sm ${
+                        isOpen
+                          ? "bg-emerald-500 text-white shadow-emerald-300 shadow-md scale-105"
+                          : "bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary border border-border"
+                      }`}
+                    >
+                      {isOpen ? (
+                        <>
+                          <ChevronUp className="w-3.5 h-3.5" />
+                          <span>닫기</span>
+                        </>
+                      ) : (
+                        <>
+                          <Settings2 className="w-3.5 h-3.5" />
+                          <span>열기</span>
+                        </>
+                      )}
+                    </button>
                   </div>
-                  <Input
-                    value={member.member_note}
-                    onChange={(e) => updateMember(idx, "member_note", e.target.value)}
-                    placeholder="개별 메모 (선택)"
-                    className="h-9 text-base"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="text-destructive hover:text-destructive/80 px-0 h-8 text-sm"
-                    onClick={() => removeMember(idx)}
-                  >
-                    <Trash2 className="w-4 h-4 mr-1" />
-                    이 순원 삭제
-                  </Button>
                 </div>
-              )}
-            </div>
-          ))}
+
+                {/* ── 펼침 영역: 성경장수 + 주보전달 + 메모 + 삭제 ── */}
+                {isOpen && (
+                  <div className="mx-3 mb-3 mt-1 rounded-xl bg-white/80 border border-emerald-200 px-3 py-3 space-y-2.5 shadow-inner">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <Label className="text-sm text-muted-foreground">성경읽은 장수</Label>
+                        <Input
+                          type="number"
+                          inputMode="numeric"
+                          value={member.bible_read || ""}
+                          onChange={(e) => updateMember(idx, "bible_read", parseInt(e.target.value) || 0)}
+                          placeholder="0"
+                          className="h-9 text-base text-center"
+                          min={0}
+                        />
+                      </div>
+                      <div className="flex items-end pb-1">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <Checkbox
+                            checked={member.bulletin_recv}
+                            onCheckedChange={(v) => updateMember(idx, "bulletin_recv", !!v)}
+                            className="w-5 h-5"
+                          />
+                          <span className="text-base">주보전달</span>
+                        </label>
+                      </div>
+                    </div>
+                    <Input
+                      value={member.member_note}
+                      onChange={(e) => updateMember(idx, "member_note", e.target.value)}
+                      placeholder="개별 메모 (선택)"
+                      className="h-9 text-base"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="text-destructive hover:text-destructive/80 px-0 h-8 text-sm"
+                      onClick={() => removeMember(idx)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      이 순원 삭제
+                    </Button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
 
           {/* 순원 추가 버튼 */}
           <button
