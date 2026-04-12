@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { PlusCircle, Trash2, Save, Send, ChevronDown, ChevronUp, ChevronLeft, Settings2 } from "lucide-react";
 import type { Profile, SunReport, SunReportMember } from "@/types/database";
@@ -52,6 +53,30 @@ const EMPTY_MEMBER = (): MemberRow => ({
   bible_read: 0,
   member_note: "",
 });
+
+// 예배 시간 옵션
+const WORSHIP_TIMES = [
+  "오전 11시",
+  "오후 2시",
+  "오후 7시",
+  "오전 10시",
+  "오후 3시",
+];
+
+// 예배 장소 옵션
+const WORSHIP_PLACES = ["교회", "본당", "교육관", "소예배실", "가정"];
+
+// 기존 worshipAt 텍스트에서 날짜·시간 파싱
+function parseWorshipAt(text: string | null | undefined, fallbackDate: string) {
+  if (!text) return { date: fallbackDate, time: "오전 11시" };
+  const dateMatch = text.match(/(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})/);
+  const timeMatch = text.match(/(오전|오후)\s*\d+시/);
+  const date = dateMatch
+    ? `${dateMatch[1]}-${dateMatch[2].padStart(2, "0")}-${dateMatch[3].padStart(2, "0")}`
+    : fallbackDate;
+  const time = timeMatch ? timeMatch[0].replace(/\s+/, " ") : "오전 11시";
+  return { date, time };
+}
 
 // 6가지 출석 항목 정의
 const ATTEND_COLS: { key: keyof MemberRow; label: string }[] = [
@@ -96,8 +121,19 @@ export default function SunReportForm({
     }
   }
 
-  const [worshipAt, setWorshipAt] = useState(initialData?.report.worship_at ?? "");
-  const [worshipPlace, setWorshipPlace] = useState(initialData?.report.worship_place ?? "");
+  const parsedWorshipAt = parseWorshipAt(initialData?.report.worship_at, selectedDate);
+  const [worshipDate, setWorshipDate] = useState(parsedWorshipAt.date);
+  const [worshipTime, setWorshipTime] = useState(parsedWorshipAt.time);
+
+  const initPlace = initialData?.report.worship_place ?? "교회";
+  const [worshipPlaceSelect, setWorshipPlaceSelect] = useState(
+    WORSHIP_PLACES.includes(initPlace) ? initPlace : "기타"
+  );
+  const [worshipPlaceCustom, setWorshipPlaceCustom] = useState(
+    WORSHIP_PLACES.includes(initPlace) ? "" : initPlace
+  );
+  const worshipPlace = worshipPlaceSelect === "기타" ? worshipPlaceCustom : worshipPlaceSelect;
+
   const [worshipLeader, setWorshipLeader] = useState(initialData?.report.worship_leader ?? "");
   const [specialNote, setSpecialNote] = useState(initialData?.report.special_note ?? "");
 
@@ -172,7 +208,7 @@ export default function SunReportForm({
         sun_leader: profile.name,
         mission_id: profile.mission_id!,
         report_date: selectedDate,
-        worship_at: worshipAt || null,
+        worship_at: worshipDate ? `${worshipDate} ${worshipTime}` : null,
         worship_place: worshipPlace || null,
         worship_leader: worshipLeader || null,
         attend_total: attendTotal,
@@ -242,25 +278,55 @@ export default function SunReportForm({
           )}
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label className="text-base">예배 일시</Label>
+          {/* 예배 일시 — 날짜 달력 + 시간 선택 */}
+          <div className="space-y-1">
+            <Label className="text-base">예배 일시</Label>
+            <div className="grid grid-cols-2 gap-2">
               <Input
-                value={worshipAt}
-                onChange={(e) => setWorshipAt(e.target.value)}
-                placeholder="예) 2024.4.7 오전11시"
+                type="date"
+                value={worshipDate}
+                onChange={(e) => setWorshipDate(e.target.value)}
                 className="h-11 text-base"
               />
+              <Select value={worshipTime} onValueChange={(v) => setWorshipTime(v ?? "오전 11시")}>
+                <SelectTrigger className="h-11 text-base">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {WORSHIP_TIMES.map((t) => (
+                    <SelectItem key={t} value={t} className="text-base">
+                      {t}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <div className="space-y-1">
-              <Label className="text-base">예배 장소</Label>
+          </div>
+
+          {/* 예배 장소 — 옵션 선택 */}
+          <div className="space-y-1">
+            <Label className="text-base">예배 장소</Label>
+            <Select value={worshipPlaceSelect} onValueChange={(v) => setWorshipPlaceSelect(v ?? "교회")}>
+              <SelectTrigger className="h-11 text-base">
+                <SelectValue placeholder="장소 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                {WORSHIP_PLACES.map((p) => (
+                  <SelectItem key={p} value={p} className="text-base">
+                    {p}
+                  </SelectItem>
+                ))}
+                <SelectItem value="기타" className="text-base">기타 (직접 입력)</SelectItem>
+              </SelectContent>
+            </Select>
+            {worshipPlaceSelect === "기타" && (
               <Input
-                value={worshipPlace}
-                onChange={(e) => setWorshipPlace(e.target.value)}
-                placeholder="예) 본당 3구역"
-                className="h-11 text-base"
+                value={worshipPlaceCustom}
+                onChange={(e) => setWorshipPlaceCustom(e.target.value)}
+                placeholder="장소를 직접 입력하세요"
+                className="h-11 text-base mt-2"
               />
-            </div>
+            )}
           </div>
           <div className="space-y-1">
             <Label className="text-base">인도자</Label>
@@ -325,36 +391,49 @@ export default function SunReportForm({
                     : idx % 2 === 0 ? "bg-white" : "bg-sky-50/60"
                 }`}
               >
-                {/* ── 타이틀 행 ── */}
-                <div className={`flex items-center px-3 pt-2 pb-0.5 ${isOpen ? "opacity-100" : "opacity-60"}`}>
-                  <span className="flex-1 text-[11px] font-semibold text-muted-foreground">이름</span>
-                  {ATTEND_COLS.map(({ label }) => (
-                    <span
-                      key={label}
-                      className={`w-9 text-center text-[11px] font-semibold shrink-0 ${
-                        isOpen ? "text-emerald-700" : "text-muted-foreground"
-                      }`}
-                    >
-                      {label}
-                    </span>
-                  ))}
-                  <span className="w-14 shrink-0" />
+                {/* ── 1행: 이름 입력 (전체 너비) + 펼치기 버튼 ── */}
+                <div className="flex items-center gap-2 px-3 pt-2.5 pb-1">
+                  <Input
+                    value={member.member_name}
+                    onChange={(e) => updateMember(idx, "member_name", e.target.value)}
+                    placeholder="이름"
+                    className={`flex-1 h-10 text-base px-3 transition-colors ${
+                      isOpen ? "border-emerald-400 bg-white ring-1 ring-emerald-300" : ""
+                    }`}
+                  />
+                  {/* ── 펼치기 버튼 ── */}
+                  <button
+                    type="button"
+                    onClick={() => setExpandedIdx(isOpen ? null : idx)}
+                    className={`flex items-center justify-center gap-1 rounded-xl px-3 py-2 text-xs font-bold transition-all duration-200 shadow-sm shrink-0 ${
+                      isOpen
+                        ? "bg-emerald-500 text-white shadow-emerald-300 shadow-md scale-105"
+                        : "bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary border border-border"
+                    }`}
+                  >
+                    {isOpen ? (
+                      <>
+                        <ChevronUp className="w-3.5 h-3.5" />
+                        <span>닫기</span>
+                      </>
+                    ) : (
+                      <>
+                        <Settings2 className="w-3.5 h-3.5" />
+                        <span>열기</span>
+                      </>
+                    )}
+                  </button>
                 </div>
 
-                {/* ── 데이터 행 ── */}
-                <div className="flex items-center px-3 py-2 gap-0">
-                  <div className="flex-1 pr-2 min-w-0">
-                    <Input
-                      value={member.member_name}
-                      onChange={(e) => updateMember(idx, "member_name", e.target.value)}
-                      placeholder="이름"
-                      className={`h-10 text-base px-2 transition-colors ${
-                        isOpen ? "border-emerald-400 bg-white ring-1 ring-emerald-300" : ""
-                      }`}
-                    />
-                  </div>
-                  {ATTEND_COLS.map(({ key }) => (
-                    <div key={key} className="w-9 flex justify-center shrink-0">
+                {/* ── 2행: 타이틀 + 체크박스 ── */}
+                <div className="flex items-center px-3 pb-2.5">
+                  {ATTEND_COLS.map(({ key, label }) => (
+                    <div key={key} className="flex-1 flex flex-col items-center gap-1 min-w-0">
+                      <span className={`text-[10px] font-semibold ${
+                        isOpen ? "text-emerald-700" : "text-muted-foreground"
+                      }`}>
+                        {label}
+                      </span>
                       <Checkbox
                         checked={member[key] as boolean}
                         onCheckedChange={(v) => updateMember(idx, key, !!v)}
@@ -366,30 +445,6 @@ export default function SunReportForm({
                       />
                     </div>
                   ))}
-                  {/* ── 펼치기 버튼 ── */}
-                  <div className="w-14 flex justify-center shrink-0 pl-1">
-                    <button
-                      type="button"
-                      onClick={() => setExpandedIdx(isOpen ? null : idx)}
-                      className={`flex items-center justify-center gap-1 rounded-xl px-2 py-1.5 text-xs font-bold transition-all duration-200 shadow-sm ${
-                        isOpen
-                          ? "bg-emerald-500 text-white shadow-emerald-300 shadow-md scale-105"
-                          : "bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary border border-border"
-                      }`}
-                    >
-                      {isOpen ? (
-                        <>
-                          <ChevronUp className="w-3.5 h-3.5" />
-                          <span>닫기</span>
-                        </>
-                      ) : (
-                        <>
-                          <Settings2 className="w-3.5 h-3.5" />
-                          <span>열기</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
                 </div>
 
                 {/* ── 펼침 영역: 성경장수 + 주보전달 + 메모 + 삭제 ── */}
