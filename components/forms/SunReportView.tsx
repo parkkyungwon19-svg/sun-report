@@ -19,6 +19,15 @@ const CHECK_LABELS: { key: keyof SunReportMember; label: string }[] = [
   { key: "bulletin_recv", label: "주보전달" },
 ];
 
+const ATTEND_SUMMARY: { key: keyof SunReportMember; label: string }[] = [
+  { key: "attend_samil",   label: "삼일"   },
+  { key: "attend_friday",  label: "금요"   },
+  { key: "attend_sun_day", label: "주낮"   },
+  { key: "attend_sun_eve", label: "주밤"   },
+  { key: "attend_sun",     label: "순모임" },
+  { key: "evangelism",     label: "전도"   },
+];
+
 export default function SunReportView({
   report,
   members,
@@ -29,6 +38,11 @@ export default function SunReportView({
   profile: Profile;
 }) {
   const router = useRouter();
+
+  // 항목별 참석 집계
+  const attendCounts = ATTEND_SUMMARY.map(({ key }) =>
+    members.filter((m) => m[key] === true).length
+  );
 
   const backHref =
     profile.role === "pastor"
@@ -88,9 +102,26 @@ export default function SunReportView({
               <span>{report.worship_leader}</span>
             </div>
           )}
-          <div className="flex gap-4 pt-1 font-medium text-primary">
-            <span>총 참석 {report.attend_total}명</span>
-            <span>성경 {report.bible_chapters}장</span>
+          {/* 항목별 참석 집계 */}
+          <div className="pt-1">
+            <p className="text-xs text-muted-foreground mb-2">항목별 참석 현황</p>
+            <div className="grid grid-cols-3 gap-1.5">
+              {ATTEND_SUMMARY.map(({ label }, i) => (
+                <div
+                  key={label}
+                  className="text-center rounded-lg border bg-muted/30 py-2 px-1"
+                >
+                  <p className="text-lg font-bold text-primary leading-tight">
+                    {attendCounts[i]}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
+              <span>순모임 참석 <strong className="text-primary">{report.attend_total}명</strong></span>
+              <span>성경 <strong className="text-primary">{report.bible_chapters}장</strong></span>
+            </div>
           </div>
         </CardContent>
       </Card>
