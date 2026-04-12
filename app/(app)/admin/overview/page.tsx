@@ -27,10 +27,30 @@ export default async function OverviewPage() {
 
   const { data: sunReports } = await supabase
     .from("sun_reports")
-    .select("sun_number, status, attend_total")
+    .select("id, sun_number, status, attend_total")
     .eq("report_date", thisSunday);
 
   const reportMap = new Map(sunReports?.map((r) => [r.sun_number, r]) ?? []);
+
+  // 6가지 항목 집계
+  const submittedIds = (sunReports ?? []).filter((r) => r.status === "submitted").map((r) => r.id);
+  type MRow = { attend_samil:boolean; attend_friday:boolean; attend_sun_day:boolean; attend_sun_eve:boolean; attend_sun:boolean; evangelism:boolean };
+  let memberRows: MRow[] = [];
+  if (submittedIds.length > 0) {
+    const { data } = await supabase
+      .from("sun_report_members")
+      .select("attend_samil,attend_friday,attend_sun_day,attend_sun_eve,attend_sun,evangelism")
+      .in("report_id", submittedIds);
+    memberRows = (data ?? []) as MRow[];
+  }
+  const attend6 = [
+    { label: "삼일",   val: memberRows.filter((m) => m.attend_samil).length },
+    { label: "금요",   val: memberRows.filter((m) => m.attend_friday).length },
+    { label: "주낮",   val: memberRows.filter((m) => m.attend_sun_day).length },
+    { label: "주밤",   val: memberRows.filter((m) => m.attend_sun_eve).length },
+    { label: "순모임", val: memberRows.filter((m) => m.attend_sun).length },
+    { label: "전도",   val: memberRows.filter((m) => m.evangelism).length },
+  ];
 
   return (
     <div className="space-y-4">
@@ -41,6 +61,23 @@ export default async function OverviewPage() {
         </div>
         <AdminPdfDownload />
       </div>
+
+      {/* 6가지 항목별 참석 현황 */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">항목별 참석 현황 — {thisSunday}</CardTitle>
+        </CardHeader>
+        <CardContent className="pb-3">
+          <div className="grid grid-cols-3 gap-2">
+            {attend6.map(({ label, val }) => (
+              <div key={label} className="text-center rounded-lg border bg-muted/30 py-2.5 px-1">
+                <p className="text-xl font-bold text-primary leading-tight">{val}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{label}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader className="pb-2">

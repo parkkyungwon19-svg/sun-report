@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-04T21:54:52.652Z",
+  "lastUpdated": "2026-04-12T20:28:36.111Z",
   "activeFeatures": [
     "constants",
     "supabase",
@@ -32,7 +32,11 @@
     "notifications",
     "reminder",
     "kakao",
-    "messages"
+    "messages",
+    "callback",
+    "setup",
+    "member-scores",
+    "pdf-data"
   ],
   "primaryFeature": "constants",
   "features": {
@@ -71,9 +75,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:26:15.937Z",
-        "lastUpdated": "2026-04-04T21:54:52.652Z"
+        "lastUpdated": "2026-04-12T09:16:36.078Z"
       },
-      "lastFile": "C:\\Users\\hiuo\\sun-report\\types\\database.ts"
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\lib\\utils\\id-to-email.ts"
     },
     "login": {
       "phase": "do",
@@ -84,7 +88,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:29:16.258Z",
-        "lastUpdated": "2026-04-04T17:39:50.919Z"
+        "lastUpdated": "2026-04-12T09:19:35.352Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(auth)\\login\\page.tsx"
     },
@@ -97,7 +101,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:29:26.445Z",
-        "lastUpdated": "2026-04-02T20:08:37.167Z"
+        "lastUpdated": "2026-04-05T09:03:49.851Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(app)\\layout.tsx"
     },
@@ -110,7 +114,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:29:44.292Z",
-        "lastUpdated": "2026-04-04T21:42:48.686Z"
+        "lastUpdated": "2026-04-12T09:24:18.273Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\components\\layout\\AppNav.tsx"
     },
@@ -123,9 +127,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:30:18.198Z",
-        "lastUpdated": "2026-04-03T22:03:18.870Z"
+        "lastUpdated": "2026-04-05T06:09:49.947Z"
       },
-      "lastFile": "C:\\Users\\hiuo\\sun-report\\components\\dashboard\\AdminDeleteButton.tsx"
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\components\\dashboard\\PastorMessageCard.tsx"
     },
     "sun-leader": {
       "phase": "do",
@@ -136,7 +140,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:31:03.497Z",
-        "lastUpdated": "2026-04-03T22:02:36.831Z"
+        "lastUpdated": "2026-04-12T09:25:27.717Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(app)\\dashboard\\sun-leader\\page.tsx"
     },
@@ -175,9 +179,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:32:15.277Z",
-        "lastUpdated": "2026-04-04T18:02:10.458Z"
+        "lastUpdated": "2026-04-12T10:47:19.958Z"
       },
-      "lastFile": "C:\\Users\\hiuo\\sun-report\\components\\forms\\MissionReportForm.tsx"
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\components\\forms\\SunReportView.tsx"
     },
     "mission-leader": {
       "phase": "do",
@@ -188,7 +192,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:33:06.397Z",
-        "lastUpdated": "2026-04-03T22:03:12.294Z"
+        "lastUpdated": "2026-04-12T09:26:31.124Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(app)\\dashboard\\mission-leader\\page.tsx"
     },
@@ -201,9 +205,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:34:22.240Z",
-        "lastUpdated": "2026-04-04T21:42:36.450Z"
+        "lastUpdated": "2026-04-12T11:00:55.910Z"
       },
-      "lastFile": "C:\\Users\\hiuo\\sun-report\\components\\admin\\MessageComposer.tsx"
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(app)\\dashboard\\admin\\page.tsx"
     },
     "history": {
       "phase": "do",
@@ -227,7 +231,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:55:10.952Z",
-        "lastUpdated": "2026-04-01T21:55:10.952Z"
+        "lastUpdated": "2026-04-12T20:28:36.111Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(app)\\admin\\overview\\page.tsx"
     },
@@ -240,7 +244,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-01T21:55:42.311Z",
-        "lastUpdated": "2026-04-03T21:15:38.971Z"
+        "lastUpdated": "2026-04-12T20:27:21.146Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(app)\\admin\\statistics\\page.tsx"
     },
@@ -305,9 +309,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-02T20:07:31.829Z",
-        "lastUpdated": "2026-04-04T21:20:46.403Z"
+        "lastUpdated": "2026-04-12T09:20:41.905Z"
       },
-      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\api\\auth\\register\\route.ts"
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(auth)\\register\\page.tsx"
     },
     "users": {
       "phase": "do",
@@ -344,7 +348,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-03T20:40:01.141Z",
-        "lastUpdated": "2026-04-03T21:29:18.561Z"
+        "lastUpdated": "2026-04-12T20:28:12.099Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\components\\charts\\StatisticsDownloadButtons.tsx"
     },
@@ -357,7 +361,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-03T21:00:50.121Z",
-        "lastUpdated": "2026-04-03T21:00:50.121Z"
+        "lastUpdated": "2026-04-12T11:02:31.398Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(app)\\admin\\weekly-report\\page.tsx"
     },
@@ -396,7 +400,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-04T18:02:04.227Z",
-        "lastUpdated": "2026-04-04T18:02:04.227Z"
+        "lastUpdated": "2026-04-05T06:09:25.323Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\api\\notifications\\route.ts"
     },
@@ -438,6 +442,58 @@
         "lastUpdated": "2026-04-04T21:41:47.871Z"
       },
       "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(app)\\admin\\messages\\page.tsx"
+    },
+    "callback": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-05T06:22:26.812Z",
+        "lastUpdated": "2026-04-05T06:22:26.812Z"
+      },
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\auth\\callback\\route.ts"
+    },
+    "setup": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-05T06:23:10.596Z",
+        "lastUpdated": "2026-04-05T06:25:59.332Z"
+      },
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(auth)\\setup\\page.tsx"
+    },
+    "member-scores": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-12T09:30:42.828Z",
+        "lastUpdated": "2026-04-12T10:19:40.974Z"
+      },
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\(app)\\admin\\member-scores\\page.tsx"
+    },
+    "pdf-data": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-12T10:56:04.130Z",
+        "lastUpdated": "2026-04-12T10:56:04.130Z"
+      },
+      "lastFile": "C:\\Users\\hiuo\\sun-report\\app\\api\\admin\\pdf-data\\route.ts"
     }
   },
   "pipeline": {
@@ -448,7 +504,7 @@
   "session": {
     "startedAt": "2026-04-01T20:57:01.792Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-04T21:54:52.652Z"
+    "lastActivity": "2026-04-12T20:28:36.111Z"
   },
   "history": [
     {
@@ -1630,6 +1686,432 @@
     {
       "timestamp": "2026-04-04T21:54:52.652Z",
       "feature": "sun-report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T22:29:59.414Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-04T22:30:06.306Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T05:41:29.091Z",
+      "feature": "dashboard",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T05:41:35.250Z",
+      "feature": "sun-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T05:41:42.007Z",
+      "feature": "sun-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T05:41:48.314Z",
+      "feature": "mission-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T05:41:56.131Z",
+      "feature": "mission-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:09:25.323Z",
+      "feature": "notifications",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:09:34.744Z",
+      "feature": "dashboard",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:09:40.535Z",
+      "feature": "dashboard",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:09:49.947Z",
+      "feature": "dashboard",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:22:26.812Z",
+      "feature": "callback",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:22:44.732Z",
+      "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:23:10.596Z",
+      "feature": "setup",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:23:22.091Z",
+      "feature": "setup",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:23:28.668Z",
+      "feature": "(app)",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:24:47.452Z",
+      "feature": "setup",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T06:25:59.332Z",
+      "feature": "setup",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T08:52:47.559Z",
+      "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T09:03:43.464Z",
+      "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-05T09:03:49.851Z",
+      "feature": "(app)",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:16:36.078Z",
+      "feature": "sun-report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:19:35.352Z",
+      "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:20:41.905Z",
+      "feature": "register",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:22:33.593Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:23:01.422Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:24:18.273Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:24:46.259Z",
+      "feature": "sun-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:25:14.305Z",
+      "feature": "sun-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:25:21.166Z",
+      "feature": "sun-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:25:27.717Z",
+      "feature": "sun-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:25:34.203Z",
+      "feature": "mission-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:25:43.693Z",
+      "feature": "mission-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:25:53.242Z",
+      "feature": "mission-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:26:18.964Z",
+      "feature": "mission-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:26:31.124Z",
+      "feature": "mission-leader",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:30:42.828Z",
+      "feature": "member-scores",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:30:54.422Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:31:05.146Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:14:54.226Z",
+      "feature": "member-scores",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:15:13.460Z",
+      "feature": "member-scores",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:19:07.465Z",
+      "feature": "member-scores",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:19:40.974Z",
+      "feature": "member-scores",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:22:56.639Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:23:28.474Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:37:20.522Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:37:36.793Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:41:10.910Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:41:16.807Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:41:28.879Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:41:51.151Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:42:04.490Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:42:17.925Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:46:43.991Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:47:19.958Z",
+      "feature": "forms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:56:04.130Z",
+      "feature": "pdf-data",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:59:29.860Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:00:47.918Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:00:55.910Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:01:48.976Z",
+      "feature": "overview",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:01:55.914Z",
+      "feature": "overview",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:02:01.086Z",
+      "feature": "statistics",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:02:08.156Z",
+      "feature": "statistics",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:02:18.535Z",
+      "feature": "statistics",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:02:24.746Z",
+      "feature": "weekly-report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:02:31.398Z",
+      "feature": "weekly-report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T20:27:21.146Z",
+      "feature": "statistics",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T20:27:44.335Z",
+      "feature": "charts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T20:28:12.099Z",
+      "feature": "charts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T20:28:26.290Z",
+      "feature": "overview",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T20:28:36.111Z",
+      "feature": "overview",
       "phase": "do",
       "action": "updated"
     }
