@@ -39,25 +39,25 @@ export default async function OverviewPage({
 
   const reportMap = new Map(sunReports?.map((r) => [r.sun_number, r]) ?? []);
 
-  // ── 6가지 항목 집계
-  const submittedIds = (sunReports ?? [])
-    .filter((r) => r.status === "submitted")
-    .map((r) => r.id);
+  // ── 순원 출석 (report_id 포함 — 전체 및 순별 집계 모두 사용)
+  const allReportIds = (sunReports ?? []).map((r) => r.id);
 
   type MRow = {
+    report_id: string;
     attend_samil: boolean; attend_friday: boolean;
     attend_sun_day: boolean; attend_sun_eve: boolean;
     attend_sun: boolean; evangelism: boolean;
   };
   let memberRows: MRow[] = [];
-  if (submittedIds.length > 0) {
+  if (allReportIds.length > 0) {
     const { data } = await supabase
       .from("sun_report_members")
-      .select("attend_samil,attend_friday,attend_sun_day,attend_sun_eve,attend_sun,evangelism")
-      .in("report_id", submittedIds);
+      .select("report_id,attend_samil,attend_friday,attend_sun_day,attend_sun_eve,attend_sun,evangelism")
+      .in("report_id", allReportIds);
     memberRows = (data ?? []) as MRow[];
   }
 
+  // 전체 합계 (상단 카드)
   const attend6 = [
     { label: "삼일",   val: memberRows.filter((m) => m.attend_samil).length },
     { label: "금요",   val: memberRows.filter((m) => m.attend_friday).length },
@@ -66,6 +66,23 @@ export default async function OverviewPage({
     { label: "순모임", val: memberRows.filter((m) => m.attend_sun).length },
     { label: "전도",   val: memberRows.filter((m) => m.evangelism).length },
   ];
+
+  // 순별 6가지 집계 map (sunNumber → counts)
+  type Sun6 = { samil: number; friday: number; sunDay: number; sunEve: number; sun: number; evangelism: number };
+  const sun6Map = new Map<number, Sun6>();
+  const reportIdToSunNumber = new Map((sunReports ?? []).map((r) => [r.id, r.sun_number]));
+  for (const m of memberRows) {
+    const sunNum = reportIdToSunNumber.get(m.report_id);
+    if (!sunNum) continue;
+    const e = sun6Map.get(sunNum) ?? { samil: 0, friday: 0, sunDay: 0, sunEve: 0, sun: 0, evangelism: 0 };
+    if (m.attend_samil)   e.samil++;
+    if (m.attend_friday)  e.friday++;
+    if (m.attend_sun_day) e.sunDay++;
+    if (m.attend_sun_eve) e.sunEve++;
+    if (m.attend_sun)     e.sun++;
+    if (m.evangelism)     e.evangelism++;
+    sun6Map.set(sunNum, e);
+  }
 
   // ── 12선교회별 집계
   const missionStats: MissionStat[] = Array.from({ length: 12 }, (_, i) => {
@@ -207,30 +224,42 @@ export default async function OverviewPage({
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs">
               <thead>
                 <tr className="border-b bg-muted/50">
-                  <th className="text-left px-4 py-2 font-medium">순</th>
-                  <th className="text-left px-4 py-2 font-medium">순장</th>
-                  <th className="text-center px-4 py-2 font-medium">참석</th>
-                  <th className="text-center px-4 py-2 font-medium">상태</th>
+                  <th className="text-left px-3 py-2 font-medium whitespace-nowrap">순</th>
+                  <th className="text-left px-2 py-2 font-medium whitespace-nowrap">순장</th>
+                  <th className="text-center px-1 py-2 font-medium text-indigo-600">삼일</th>
+                  <th className="text-center px-1 py-2 font-medium text-purple-600">금요</th>
+                  <th className="text-center px-1 py-2 font-medium text-amber-600">주낮</th>
+                  <th className="text-center px-1 py-2 font-medium text-red-500">주밤</th>
+                  <th className="text-center px-1 py-2 font-medium text-green-600">순모임</th>
+                  <th className="text-center px-1 py-2 font-medium text-orange-500">전도</th>
+                  <th className="text-center px-2 py-2 font-medium">상태</th>
                 </tr>
               </thead>
               <tbody>
                 {SUN_DIRECTORY.map((entry) => {
                   const report = reportMap.get(entry.sunNumber);
+                  const s6 = sun6Map.get(entry.sunNumber);
+                  const hasData = report?.status === "submitted" && s6;
                   return (
                     <tr key={entry.sunNumber} className="border-b last:border-0">
-                      <td className="px-4 py-2.5 font-medium">{entry.sunNumber}순</td>
-                      <td className="px-4 py-2.5 text-muted-foreground">{entry.sunLeader}</td>
-                      <td className="px-4 py-2.5 text-center">{report?.attend_total ?? "−"}</td>
-                      <td className="px-4 py-2.5 text-center">
+                      <td className="px-3 py-2 font-medium whitespace-nowrap">{entry.sunNumber}순</td>
+                      <td className="px-2 py-2 text-muted-foreground whitespace-nowrap">{entry.sunLeader}</td>
+                      <td className="px-1 py-2 text-center text-indigo-600 font-medium">{hasData ? s6.samil : "−"}</td>
+                      <td className="px-1 py-2 text-center text-purple-600 font-medium">{hasData ? s6.friday : "−"}</td>
+                      <td className="px-1 py-2 text-center text-amber-600 font-medium">{hasData ? s6.sunDay : "−"}</td>
+                      <td className="px-1 py-2 text-center text-red-500 font-medium">{hasData ? s6.sunEve : "−"}</td>
+                      <td className="px-1 py-2 text-center text-green-600 font-semibold">{hasData ? s6.sun : "−"}</td>
+                      <td className="px-1 py-2 text-center text-orange-500 font-medium">{hasData ? s6.evangelism : "−"}</td>
+                      <td className="px-2 py-2 text-center">
                         {report?.status === "submitted" ? (
-                          <CheckCircle2 className="w-4 h-4 text-green-500 mx-auto" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-green-500 mx-auto" />
                         ) : report?.status === "draft" ? (
-                          <Clock className="w-4 h-4 text-amber-400 mx-auto" />
+                          <Clock className="w-3.5 h-3.5 text-amber-400 mx-auto" />
                         ) : (
-                          <XCircle className="w-4 h-4 text-gray-300 mx-auto" />
+                          <XCircle className="w-3.5 h-3.5 text-gray-300 mx-auto" />
                         )}
                       </td>
                     </tr>
