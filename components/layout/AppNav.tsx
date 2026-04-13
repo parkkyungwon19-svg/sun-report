@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LogOut, LayoutDashboard, FileText, Bell, Send } from "lucide-react";
+import { LogOut, LayoutDashboard, FileText, Bell, Send, BookOpen, HeartHandshake } from "lucide-react";
 import type { Profile } from "@/types/database";
 
 const ROLE_LABEL: Record<string, string> = {
@@ -130,6 +130,36 @@ export default function AppNav({ profile }: { profile: Profile }) {
                 <Link href="/admin/messages">
                   <Send className="w-5 h-5" />
                   <span className="text-[10px] leading-tight">메시지</span>
+                </Link>
+              </Button>
+            )}
+
+            {/* 담임목사: 목회 브리핑 */}
+            {profile.role === "pastor" && (
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="text-primary-foreground hover:bg-primary-foreground/10 flex flex-col h-12 gap-0 px-2"
+              >
+                <Link href="/admin/pastoral-briefing">
+                  <BookOpen className="w-5 h-5" />
+                  <span className="text-[10px] leading-tight">브리핑</span>
+                </Link>
+              </Button>
+            )}
+
+            {/* 담임목사: 목양 알림 */}
+            {profile.role === "pastor" && (
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="text-primary-foreground hover:bg-primary-foreground/10 flex flex-col h-12 gap-0 px-2"
+              >
+                <Link href="/admin/pastoral-alerts">
+                  <HeartHandshake className="w-5 h-5" />
+                  <span className="text-[10px] leading-tight">목양알림</span>
                 </Link>
               </Button>
             )}

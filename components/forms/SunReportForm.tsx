@@ -57,6 +57,7 @@ const EMPTY_MEMBER = (): MemberRow => ({
 // 예배 시간 옵션
 const WORSHIP_TIMES = [
   "오전 11시",
+  "오후 1시",
   "오후 2시",
   "오후 7시",
   "오전 10시",
