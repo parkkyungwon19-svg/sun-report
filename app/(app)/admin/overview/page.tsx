@@ -214,9 +214,6 @@ export default async function OverviewPage({
         </CardContent>
       </Card>
 
-      {/* 주간 추이 차트 */}
-      <OverviewTrendChart data={trendData} />
-
       {/* 44순 상세 테이블 */}
       <Card>
         <CardHeader className="pb-2">
@@ -266,6 +263,23 @@ export default async function OverviewPage({
                   );
                 })}
               </tbody>
+              <tfoot>
+                <tr className="border-t-2 border-primary/20 bg-primary/5 font-bold">
+                  <td className="px-3 py-2 text-xs whitespace-nowrap text-primary">합계</td>
+                  <td className="px-2 py-2 text-xs text-muted-foreground">
+                    {submittedCount}순 제출
+                  </td>
+                  <td className="px-1 py-2 text-center text-xs text-indigo-600">{attend6[0].val}</td>
+                  <td className="px-1 py-2 text-center text-xs text-purple-600">{attend6[1].val}</td>
+                  <td className="px-1 py-2 text-center text-xs text-amber-600">{attend6[2].val}</td>
+                  <td className="px-1 py-2 text-center text-xs text-red-500">{attend6[3].val}</td>
+                  <td className="px-1 py-2 text-center text-xs text-green-600">{attend6[4].val}</td>
+                  <td className="px-1 py-2 text-center text-xs text-orange-500">{attend6[5].val}</td>
+                  <td className="px-2 py-2 text-center text-xs text-muted-foreground">
+                    {submittedCount}/44
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </CardContent>
