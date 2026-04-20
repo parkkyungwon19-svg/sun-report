@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getThisSunday, formatDate } from "@/lib/utils/report-aggregator";
 import { Trophy, ChevronLeft } from "lucide-react";
 import MemberScoresTable from "./MemberScoresTable";
+import DateRangePicker from "./DateRangePicker";
 
 // ─── 점수 기준 ────────────────────────────────
 const SCORE_ATTEND   = 1;    // 출석 항목당 1점 (삼일·금요·주낮·주밤·순모임)
@@ -12,8 +13,11 @@ const SCORE_EVANGEL  = 10;   // 전도 1회 10점
 const SCORE_BIBLE    = 0.02; // 성경 1장 0.02점
 
 // ─── 기간 범위 계산 ───────────────────────────
-function getDateRange(period: string) {
+function getDateRange(period: string, from?: string, to?: string) {
   const now = new Date();
+  if (period === "custom" && from && to) {
+    return { startDate: from, endDate: to, label: `${from} ~ ${to}` };
+  }
   if (period === "week") {
     const sun = formatDate(getThisSunday());
     return { startDate: sun, endDate: sun, label: "이번 주" };
@@ -68,7 +72,7 @@ const PERIODS = [
 export default async function MemberScoresPage({
   searchParams,
 }: {
-  searchParams: Promise<{ period?: string }>;
+  searchParams: Promise<{ period?: string; from?: string; to?: string }>;
 }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -82,10 +86,10 @@ export default async function MemberScoresPage({
   if (!profile || profile.role !== "pastor") redirect("/dashboard");
 
   const params = await searchParams;
-  const period = ["week", "month", "year"].includes(params.period ?? "")
+  const period = ["week", "month", "year", "custom"].includes(params.period ?? "")
     ? (params.period ?? "week")
     : "week";
-  const { startDate, endDate, label } = getDateRange(period);
+  const { startDate, endDate, label } = getDateRange(period, params.from, params.to);
 
   // ① 기간 내 제출된 순보고서 조회
   const { data: reports } = await supabase
@@ -209,6 +213,13 @@ export default async function MemberScoresPage({
         ))}
       </div>
 
+      {/* 달력 (커스텀 날짜 범위) */}
+      <DateRangePicker
+        activePeriod={period}
+        defaultFrom={params.from}
+        defaultTo={params.to}
+      />
+
       {/* 기간 요약 */}
       <div className="flex items-center justify-between px-1">
         <span className="font-semibold text-base text-primary">{label}</span>
@@ -252,7 +263,14 @@ export default async function MemberScoresPage({
           </CardContent>
         </Card>
       ) : (
-        <MemberScoresTable ranked={ranked} isWeek={isWeek} />
+        <MemberScoresTable
+          ranked={ranked}
+          isWeek={isWeek}
+          period={period}
+          label={label}
+          customFrom={params.from}
+          customTo={params.to}
+        />
       )}
 
       {/* 점수 기준 안내 */}

@@ -3,7 +3,8 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, X, Download } from "lucide-react";
 
 type MemberAgg = {
   memberName: string;
@@ -53,11 +54,41 @@ function EvangelCell({ val, isWeek }: { val: number; isWeek: boolean }) {
 export default function MemberScoresTable({
   ranked,
   isWeek,
+  period,
+  label,
+  customFrom,
+  customTo,
 }: {
   ranked: MemberAgg[];
   isWeek: boolean;
+  period: string;
+  label: string;
+  customFrom?: string;
+  customTo?: string;
 }) {
   const [query, setQuery] = useState("");
+  const [downloading, setDownloading] = useState(false);
+
+  async function handleDownload() {
+    setDownloading(true);
+    try {
+      let url = `/api/member-scores/download?period=${period}`;
+      if (period === "custom" && customFrom && customTo) {
+        url += `&from=${customFrom}&to=${customTo}`;
+      }
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("다운로드 실패");
+      const blob = await res.blob();
+      const objUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objUrl;
+      a.download = `순원점수순위_${label}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(objUrl);
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   const filtered = useMemo(() => {
     const q = query.trim();
@@ -72,7 +103,19 @@ export default function MemberScoresTable({
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">전체 순위표</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base">전체 순위표</CardTitle>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleDownload}
+            disabled={downloading || ranked.length === 0}
+            className="gap-1.5 text-xs h-8"
+          >
+            <Download className="w-3.5 h-3.5" />
+            {downloading ? "다운로드 중..." : "엑셀 다운로드"}
+          </Button>
+        </div>
 
         {/* 이름 검색 */}
         <div className="relative mt-2">
