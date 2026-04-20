@@ -12,6 +12,13 @@ export function buildBriefingUserPrompt(
 [집계 데이터]
 ${rawStatsJson}
 
+※ special_notes: 순장이 직접 기재한 순보고서 특별보고사항
+※ mission_special_items: 이번 주 선교회장이 항목별로 기재한 특별보고사항 (질병·경제·가정 등)
+※ ongoing_care_items: 담임목사님이 특별보고관리에서 기도중·진행중으로 관리 중인 이전 주 케이스
+  - pastor_memo 필드가 있다면 목사님의 현재 메모/상황을 반영해 주세요
+  → special_notes, mission_special_items, ongoing_care_items에 언급된 교인은
+     반드시 "이번 주 특별히 품어야 할 교인" 섹션에 포함해주세요.
+
 위 데이터를 분석하여 아래 형식으로 목회 브리핑을 작성해주세요.
 각 섹션의 제목은 그대로 사용하고, 내용만 채워주세요.
 
@@ -25,13 +32,20 @@ ${rawStatsJson}
 (전체 출석률, 전주 대비 증감, 특이한 선교회/순 언급)
 
 **이번 주 특별히 품어야 할 교인**
-(3~5명, 각자 이름·소속·사유·목사님께 드리는 건의 포함)
+(special_notes, mission_special_items, ongoing_care_items에 언급된 교인을 우선 포함.
+ongoing_care_items의 pastor_memo가 있으면 현재 진행 상황과 함께 서술.
+각자 이름·소속·사유·목사님께 드리는 건의)
+
+**진행 중인 목양 케이스**
+(ongoing_care_items에서 기도중·진행중인 항목을 정리.
+항목별로 선교회·카테고리·내용·현재 상태·목사님 메모 요약.
+없으면 "현재 진행 중인 목양 케이스가 없습니다" 작성)
 
 **기쁜 소식**
 (해당 주 기쁜 일이 있는 교인들, 없으면 "이번 주 특별한 경사 소식은 없었습니다" 작성)
 
 **중보기도 제목**
-(건강, 가정, 경제, 신앙 영역별로 통합하여 기도문 형식으로)
+(special_notes, mission_special_items, ongoing_care_items의 질병·가정·경제 내용을 반영하여 기도문 형식으로)
 
 **성경읽기 현황**
 (전체 실천률, 특별히 잘하는 순과 격려가 필요한 순 언급)

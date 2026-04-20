@@ -69,15 +69,35 @@ export default function SpecialReportsManager({ items: initialItems }: Props) {
 
       if (error) {
         toast.error("저장 실패: " + error.message);
-      } else {
-        setItems((prev) =>
-          prev.map((i) =>
-            i.id === id
-              ? { ...i, status: statuses[id], pastor_memo: memos[id] || null }
-              : i
-          )
-        );
-        toast.success("저장되었습니다");
+        return;
+      }
+
+      setItems((prev) =>
+        prev.map((i) =>
+          i.id === id
+            ? { ...i, status: statuses[id], pastor_memo: memos[id] || null }
+            : i
+        )
+      );
+      toast.success("저장되었습니다");
+
+      // 기도중·진행중 상태인 경우 목양알림 생성
+      const item = items.find((i) => i.id === id);
+      if (item && statuses[id] !== "해결됨") {
+        fetch("/api/admin/special-item-alert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            itemId: id,
+            missionId: item.mission_id,
+            missionLeader: item.mission_leader,
+            category: item.category,
+            content: item.content,
+            status: statuses[id],
+            pastorMemo: memos[id] || null,
+            reportDate: item.report_date,
+          }),
+        }).catch(() => {});
       }
     });
   }

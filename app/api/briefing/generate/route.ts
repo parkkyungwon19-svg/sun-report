@@ -52,15 +52,47 @@ export async function POST(req: NextRequest) {
     memberRows = data ?? [];
   }
 
+  // 이번 주 선교회 특별보고 항목 (새로 접수된 것)
+  const { data: weekSpecialItems } = await supabase
+    .from("special_report_items")
+    .select("mission_id, mission_leader, category, content, status, pastor_memo, report_date")
+    .gte("report_date", weekOf)
+    .lt("report_date", weekEnd);
+
+  // 진행 중인 목양 케이스 (기도중·진행중 상태의 모든 항목 — 이전 주 포함)
+  const { data: activeItems } = await supabase
+    .from("special_report_items")
+    .select("mission_id, mission_leader, category, content, status, pastor_memo, report_date")
+    .in("status", ["기도중", "진행중"])
+    .lt("report_date", weekOf); // 이번 주 이전 항목만 (이번 주는 weekSpecialItems에 포함)
+
   const rawStats = {
     week_of: weekOf,
     total_suns: 44,
     reported_suns: (reports ?? []).length,
     total_attend: (reports ?? []).reduce((s, r) => s + (r.attend_total ?? 0), 0),
     total_bible_chapters: memberRows.reduce((s, m) => s + (m.bible_read ?? 0), 0),
+    // 순보고서 특별보고 (순장이 작성)
     special_notes: (reports ?? [])
       .filter((r) => r.special_note)
-      .map((r) => ({ sun_number: r.sun_number, note: r.special_note })),
+      .map((r) => ({ source: `${r.sun_number}순`, note: r.special_note })),
+    // 이번 주 선교회 특별보고 항목
+    mission_special_items: (weekSpecialItems ?? []).map((i) => ({
+      source: `선교회${i.mission_id}(${i.mission_leader})`,
+      category: i.category,
+      content: i.content,
+      status: i.status,
+      pastor_memo: i.pastor_memo ?? null,
+    })),
+    // 진행 중인 목양 케이스 (기도중·진행중, 이전 주 포함)
+    ongoing_care_items: (activeItems ?? []).map((i) => ({
+      source: `선교회${i.mission_id}(${i.mission_leader})`,
+      category: i.category,
+      content: i.content,
+      status: i.status,
+      pastor_memo: i.pastor_memo ?? null,
+      report_date: i.report_date,
+    })),
   };
 
   const userPrompt = buildBriefingUserPrompt(
